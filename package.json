@@ -1,0 +1,29 @@
+{
+  "name": "crustomize",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/json-merge-patch": "^1.0.0",
+    "prettier": "^3.5.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@types/ejs": "^3.1.5",
+    "ajv": "^8.17.1",
+    "deepmerge": "^4.3.1",
+    "ejs": "^3.1.10",
+    "fast-json-patch": "^3.1.1",
+    "indent-string": "^5.0.0",
+    "meow": "^13.2.0",
+    "yaml": "^2.7.0",
+    "yaml-cfn": "^0.3.2"
+  },
+  "prettier": {
+    "singleQuote": false,
+    "trailingComma": "all",
+    "semi": false
+  }
+}

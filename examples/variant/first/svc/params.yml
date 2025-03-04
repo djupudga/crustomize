@@ -1,0 +1,4 @@
+- ParameterKey: EnvironmentName
+  ParameterValue: <%= values.EnvironmentName %>
+- ParameterKey: VpcId
+  ParameterValue: <%= lookup(values.VpcStackName, "VPC") %>
