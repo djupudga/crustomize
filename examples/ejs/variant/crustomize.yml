@@ -1,0 +1,8 @@
+base: ../base
+overlays:
+- ./Template.yml
+params: ./params.yml
+values:
+  NetworkMode: awsvpc
+  VpcStackName: SomeName
+  Foo: true

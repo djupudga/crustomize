@@ -6,11 +6,12 @@ import { AjvValidationError, handleError } from "./errors"
 import {yamlDump, yamlParse} from "yaml-cfn"
 import { processYaml } from "./process"
 import deepmerge from "deepmerge"
-import * as patch from "fast-json-patch"
 
+type Engine = "ejs" | "handlebars"
 export type Flags = {
 	profile: string
 	output: string | undefined
+	engine: Engine
 };
 
 export type ApplyFunction = (path: string, flags: Flags) => void

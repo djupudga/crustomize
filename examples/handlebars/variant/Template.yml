@@ -1,0 +1,7 @@
+Resources:
+  TaskDefinition:
+    Properties:
+      NetworkMode: awsvpc
+      {{#if values.Foo}}
+      Foo: "bar"
+      {{/if}}
