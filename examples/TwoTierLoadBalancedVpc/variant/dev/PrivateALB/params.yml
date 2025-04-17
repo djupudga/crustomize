@@ -1,9 +1,0 @@
-# Private ALB Parameters
-- ParameterKey: Environment
-  ParameterValue: {{ values.Environment }}
-- ParameterKey: VpcId
-  ParameterValue: {{ lookup values.VpcStackName "VpcId" }}
-- ParameterKey: PrivateSubnets
-  ParameterValue: {{ lookup values.VpcStackName "PrivateSubnets" }}
-- ParameterKey: PublicALBSecurityGroupId
-  ParameterValue: {{ lookup values.PublicAlbStackName "PublicALBSecurityGroupId" }}

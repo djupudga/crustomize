@@ -11,18 +11,15 @@
         "type": "string"
       }
     },
-		"params": {
-			"type": "string"
-		},
-		"values": {
-			"type": "object",
-			"not": {
-				"required": [
-					"base",
-					"overlays"
-				]
-			}
-		}
+    "params": {
+      "type": "string"
+    },
+    "values": {
+      "type": "object",
+      "not": {
+        "required": ["base", "overlays"]
+      }
+    }
   },
   "required": ["base"],
   "additionalProperties": false

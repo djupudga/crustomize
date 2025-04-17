@@ -1,14 +1,14 @@
-import type { ApplyFunction } from "./apply";
-import { apply } from "./apply";
+import type { ApplyFunction } from "./apply"
+import { apply } from "./apply"
 
 type Commands = {
-	apply: ApplyFunction;
+  apply: ApplyFunction
 }
 
 export const commands: Commands = {
-	apply
+  apply,
 }
 
 export function isCommand(cmd: string): cmd is keyof typeof commands {
-  return cmd in commands;
+  return cmd in commands
 }

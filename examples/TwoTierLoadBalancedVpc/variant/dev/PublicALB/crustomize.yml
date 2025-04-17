@@ -1,7 +1,0 @@
-base: ../../../base/PublicALB
-overlays:
-  - ./alb.yml
-params: ./params.yml
-values:
-  Environment: dev
-  VpcStackName: dev-vpc

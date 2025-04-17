@@ -1,6 +1,6 @@
 base: ../base
 overlays:
-- ./Template.yml
+  - ./Template.yml
 params: ./params.yml
 values:
   NetworkMode: awsvpc

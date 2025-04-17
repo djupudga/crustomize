@@ -2,6 +2,11 @@
   "name": "crustomize",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "lint": "bun run eslint .",
+    "format": "bun run prettier . --write"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/json-merge-patch": "^1.0.0",
@@ -25,6 +30,9 @@
   "prettier": {
     "singleQuote": false,
     "trailingComma": "all",
-    "semi": false
+    "semi": false,
+    "tabWidth": 2,
+    "printWidth": 80,
+    "useTabs": false
   }
 }
