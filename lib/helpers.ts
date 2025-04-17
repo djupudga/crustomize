@@ -2,7 +2,7 @@ import fs from "fs"
 import indentString from "indent-string"
 import path from "path"
 import { yamlDump } from "yaml-cfn"
-import { lookup } from "./aws"
+import { getSecret, getParameter, lookup } from "./aws"
 
 export const helpers = {
   /**
@@ -96,4 +96,28 @@ export const helpers = {
   lookupCfOutput(profile?: string) {
     return (stack: string, key: string) => lookup(stack, key, profile)
   },
+  /**
+   * Gets a parameter from AWS parameter store.
+   * @param name The name of the parameter.
+   * @param query JMESPath query, if omitted Parameter.Value.
+   * @param profile The AWS CLI profile to use.
+   * @returns The value of the parameter.
+   * @example
+   *  {{ getParameter("/my-parameter") }}
+   **/
+  getParameter(profile?: string) {
+    return (name: string, query?: string) => getParameter(name, query, profile)
+  }
+  /**
+   * Gets a secret from AWS Secrets Manager.
+   * @param secretName The name of the secret.
+   * @param query JMESPath query, if omitted SecretString.
+   * @param profile The AWS CLI profile to use.
+   * @returns The value of the secret.
+   * @example
+   *  {{ getSecret("my-secret", "username") }}
+   */
+  getSecret(profile?: string) {
+    return (secretName: string, query?: string) => getSecret(secretName, query, profile)
+  }
 }

@@ -30,7 +30,24 @@ function fetchOutputs(
   ]
   if (profile) args.push("--profile", profile)
 
-  // Execute the command synchronously
+  const result = runAwsCommand(args)
+
+  try {
+    // Parse the JSON output from the AWS CLI
+    const outputs: CloudFormationOutput[] = JSON.parse(result)
+    return outputs
+  } catch (err) {
+    throw new Error(`Failed to parse JSON output: ${err}`)
+  }
+}
+
+/**
+ * Executes an AWS CLI command synchronously and returns the output.
+ * @param args - The command-line arguments for the AWS CLI command.
+ * @returns The standard output of the command.
+ * @throws If the command fails or if there is an error.
+ */
+function runAwsCommand(args: string[]): string {
   const result = spawnSync("aws", args, { encoding: "utf-8" })
 
   if (result.error) {
@@ -40,14 +57,7 @@ function fetchOutputs(
   if (result.status !== 0) {
     throw new Error(`Command failed: ${result.stderr}`)
   }
-
-  try {
-    // Parse the JSON output from the AWS CLI
-    const outputs: CloudFormationOutput[] = JSON.parse(result.stdout)
-    return outputs
-  } catch (err) {
-    throw new Error(`Failed to parse JSON output: ${err}`)
-  }
+  return result.stdout
 }
 
 /**
@@ -71,3 +81,67 @@ export function lookup(
   }
   return output.OutputValue
 }
+
+/**
+ * Synchronously fetches a secret from AWS Secrets Manager.
+ *
+ * @param secretName - The name of the secret.
+ * @param query - The query string to filter the secret.
+ * @param profile - The AWS CLI profile to use.
+ * @returns The secret value if found; otherwise, null.
+ */
+export function getSecret(
+  secretName: string,
+  query?: string,
+  profile?: string,
+): string {
+  const args = [
+    "secretsmanager",
+    "get-secret-value",
+    "--secret-id",
+    secretName,
+    "--query",
+  ]
+  if (query) args.push(query)
+  else args.push("SecretString")
+
+  if (profile) args.push("--profile", profile)
+
+  return runAwsCommand(args)
+}
+
+/**
+ * Synchronously fetches a parameter from AWS Systems Manager Parameter Store.
+ *
+ * @param name - The name of the parameter.
+ * @param query - The query string to filter the parameter.
+ * @param profile - The AWS CLI profile to use.
+ * @returns The parameter value if found; otherwise, null.
+ * @throws If the command fails or if the JSON output cannot be parsed.
+ */
+export function getParameter(
+  name: string,
+  query?: string,
+  profile?: string,
+): string {
+  const args = [
+    "ssm",
+    "get-parameter",
+    "--name",
+    name,
+    "--query",
+  ]
+  if (query) args.push(query)
+  else args.push("Parameter.Value")
+
+  if (profile) args.push("--profile", profile)
+
+  return runAwsCommand(args)
+}
+
+
+
+
+
+
+

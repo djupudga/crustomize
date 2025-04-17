@@ -18,6 +18,8 @@ type Data = {
   getFile: (file: string) => string
   fileToBase64: (file: string) => string
   lookupCfOutput: (stackName: string, key: string) => string
+  getSecret: (secretName: string, query?: string) => string
+  getParameter: (name: string, query?: string) => string
 }
 
 export function processYaml(
@@ -46,6 +48,8 @@ export function processYaml(
     data.getFile = helpers.getFile(wd)
     data.fileToBase64 = helpers.fileToBase64(wd)
     data.lookupCfOutput = helpers.lookupCfOutput(flags.profile)
+    data.getSecret = helpers.getSecret(flags.profile)
+    data.getParameter = helpers.getParameter(flags.profile)
 
     return ejs.render(yamlString, data, {
       escape: (s: string) => (s == null ? "" : s),
@@ -63,6 +67,11 @@ export function processYaml(
     handlebars.registerHelper(
       "lookupCfOutput",
       helpers.lookupCfOutput(flags.profile),
+    )
+    handlebars.registerHelper("getSecret", helpers.getSecret(flags.profile))
+    handlebars.registerHelper(
+      "getParameter",
+      helpers.getParameter(flags.profile),
     )
     const template = handlebars.compile(yamlString, { noEscape: true })
     return template(data)
