@@ -1,0 +1,16 @@
+base: ../../../base/vpc
+overlays:
+  - ./vpc.yml
+params: ./params.yml
+values:
+  Environment: dev
+  VpcCidr: 10.0.0.0/16
+  azs:
+    - us-east-1a
+    - us-east-1b
+  publicCidr:
+    - 10.0.0.0/24
+    - 10.0.1.0/24
+  privateCidr:
+    - 10.0.10.0/24
+    - 10.0.11.0/24

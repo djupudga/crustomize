@@ -7,11 +7,10 @@ import {yamlDump, yamlParse} from "yaml-cfn"
 import { processYaml } from "./process"
 import deepmerge from "deepmerge"
 
-type Engine = "ejs" | "handlebars"
 export type Flags = {
 	profile: string
 	output: string | undefined
-	engine: Engine
+	engine: string 
 };
 
 export type ApplyFunction = (path: string, flags: Flags) => void

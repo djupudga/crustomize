@@ -1,0 +1,13 @@
+# ASG Parameters
+- ParameterKey: Environment
+  ParameterValue: {{ values.Environment }}
+- ParameterKey: VpcId
+  ParameterValue: {{ lookup values.VpcStackName "VpcId" }}
+- ParameterKey: PrivateSubnets
+  ParameterValue: {{ lookup values.VpcStackName "PrivateSubnets" }}
+- ParameterKey: PrivateALBTargetGroupArn
+  ParameterValue: {{ lookup values.PrivateAlbStackName "PrivateALBTargetGroupArn" }}
+- ParameterKey: PrivateALBSecurityGroupId
+  ParameterValue: {{ lookup values.PrivateAlbStackName "PrivateALBSecurityGroupId" }}
+- ParameterKey: InstanceType
+  ParameterValue: {{ values.instanceType }}

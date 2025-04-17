@@ -15,7 +15,7 @@ type Data = {
 	toBase64: (s: string) => string
 	getFile: (file: string) => string
 	fileToBase64: (file: string) => string
-	lookup: (stackName: string, key: string) => string
+	lookupCfOutput: (stackName: string, key: string) => string
 }
 
 export function processYaml(
@@ -35,7 +35,7 @@ export function processYaml(
 		data.toBase64 = helpers.toBase64
 		data.getFile = helpers.getFile(wd)
 		data.fileToBase64 = helpers.fileToBase64(wd)
-		data.lookup = helpers.lookup(flags.profile)
+		data.lookupCfOutput = helpers.lookupCfOutput(flags.profile)
 
 		return ejs.render(yamlString, data, {
 			escape: (s: string) => s == null ? "" : s }
@@ -50,7 +50,7 @@ export function processYaml(
 		handlebars.unregisterHelper('fileToBase64')
 		handlebars.registerHelper('getFile', helpers.getFile(wd))
 		handlebars.registerHelper('fileToBase64', helpers.fileToBase64(wd))
-		handlebars.registerHelper('lookup', helpers.lookup(flags.profile))
+		handlebars.registerHelper('lookupCfOutput', helpers.lookupCfOutput(flags.profile))
 		const template = handlebars.compile(yamlString, { noEscape: true })
 		return template(data)
 	} else {

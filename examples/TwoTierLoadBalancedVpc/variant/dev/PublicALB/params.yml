@@ -1,0 +1,7 @@
+# Public ALB Parameters
+- ParameterKey: Environment
+  ParameterValue: {{ values.Environment }}
+- ParameterKey: VpcId
+  ParameterValue: {{ lookup values.VpcStackName "VpcId" }}
+- ParameterKey: PublicSubnets
+  ParameterValue: {{ lookup values.VpcStackName "PublicSubnets" }}

@@ -93,7 +93,7 @@ export const helpers = {
 	 * @example
 	 *   {{ lookup("my-stack", "MyOutput") }}
 	 **/
-	lookup(profile: string) {
+	lookupCfOutput(profile: string) {
 		return (stack: string, key: string) => lookup(stack, key, profile)
 	},
 }

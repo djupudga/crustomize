@@ -1,0 +1,5 @@
+# VPC Parameters
+- ParameterKey: Environment
+  ParameterValue: {{ values.Environment }}
+- ParameterKey: VpcCidr
+  ParameterValue: {{ values.VpcCidr }}

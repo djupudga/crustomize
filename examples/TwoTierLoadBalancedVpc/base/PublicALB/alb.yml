@@ -1,0 +1,100 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Public Application Load Balancer forwarding to private ALB
+
+Parameters:
+  Environment:
+    Type: String
+    Description: Environment name
+    Default: base
+
+  VpcId:
+    Type: String
+    Description: VPC ID
+    Default: ''
+
+  PublicSubnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: List of Public Subnet IDs
+
+  PrivateAlbDnsName:
+    Type: String
+    Description: DNS name of the private ALB
+    Default: ''
+
+Resources:
+  PublicALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for public ALB
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-public-alb-sg
+
+  PublicALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub ${Environment}-public-alb
+      Scheme: internet-facing
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: '60'
+      SecurityGroups:
+        - !Ref PublicALBSecurityGroup
+      Subnets: !Ref PublicSubnets
+      Type: application
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-public-alb
+
+  PublicALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref PublicALBTargetGroup
+      LoadBalancerArn: !Ref PublicALB
+      Port: 80
+      Protocol: HTTP
+
+  PublicALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /health
+      HealthCheckPort: traffic-port
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      Name: !Sub ${Environment}-public-alb-tg
+      Port: 80
+      Protocol: HTTP
+      TargetType: ip
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-public-alb-tg
+
+Outputs:
+  PublicALBDnsName:
+    Description: DNS name of the public ALB
+    Value: !GetAtt PublicALB.DNSName
+    Export:
+      Name: !Sub ${Environment}-PublicALBDnsName
+
+  PublicALBSecurityGroupId:
+    Description: Security Group ID for the public ALB
+    Value: !Ref PublicALBSecurityGroup
+    Export:
+      Name: !Sub ${Environment}-PublicALBSecurityGroupId

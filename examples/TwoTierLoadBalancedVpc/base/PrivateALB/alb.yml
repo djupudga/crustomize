@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Private Application Load Balancer for EC2 instances
+
+Parameters:
+  Environment:
+    Type: String
+    Description: Environment name
+    Default: base
+
+  VpcId:
+    Type: String
+    Description: VPC ID
+    Default: ''
+
+  PrivateSubnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: List of Private Subnet IDs
+
+  PublicALBSecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Security Group ID of the public ALB
+
+Resources:
+  PrivateALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for private ALB
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          SourceSecurityGroupId: !Ref PublicALBSecurityGroupId
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-private-alb-sg
+
+  PrivateALB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub ${Environment}-private-alb
+      Scheme: internal
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: '60'
+      SecurityGroups:
+        - !Ref PrivateALBSecurityGroup
+      Subnets: !Ref PrivateSubnets
+      Type: application
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-private-alb
+
+  PrivateALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref PrivateALBTargetGroup
+      LoadBalancerArn: !Ref PrivateALB
+      Port: 80
+      Protocol: HTTP
+
+  PrivateALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: /health
+      HealthCheckPort: traffic-port
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      Name: !Sub ${Environment}-private-alb-tg
+      Port: 80
+      Protocol: HTTP
+      TargetType: instance
+      UnhealthyThresholdCount: 2
+      VpcId: !Ref VpcId
+      Tags:
+        - Key: Name
+          Value: !Sub ${Environment}-private-alb-tg
+
+Outputs:
+  PrivateALBDnsName:
+    Description: DNS name of the private ALB
+    Value: !GetAtt PrivateALB.DNSName
+    Export:
+      Name: !Sub ${Environment}-PrivateALBDnsName
+
+  PrivateALBSecurityGroupId:
+    Description: Security Group ID for the private ALB
+    Value: !Ref PrivateALBSecurityGroup
+    Export:
+      Name: !Sub ${Environment}-PrivateALBSecurityGroupId
+
+  PrivateALBTargetGroupArn:
+    Description: ARN of the private ALB target group
+    Value: !Ref PrivateALBTargetGroup
+    Export:
+      Name: !Sub ${Environment}-PrivateALBTargetGroupArn

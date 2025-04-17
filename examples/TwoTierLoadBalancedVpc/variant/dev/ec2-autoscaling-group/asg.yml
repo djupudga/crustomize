@@ -1,0 +1,29 @@
+Resources:
+  AutoScalingGroup:
+    Properties:
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+          PropagateAtLaunch: true
+        - Key: CostCenter
+          Value: dev-infrastructure
+          PropagateAtLaunch: true
+
+  EC2SecurityGroup:
+    Properties:
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: CostCenter
+          Value: dev-infrastructure
+
+  LaunchTemplate:
+    Properties:
+      LaunchTemplateData:
+        TagSpecifications:
+          - ResourceType: instance
+            Tags:
+              - Key: Environment
+                Value: !Ref Environment
+              - Key: CostCenter
+                Value: dev-infrastructure
