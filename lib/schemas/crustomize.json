@@ -11,6 +11,32 @@
         "type": "string"
       }
     },
+    "stack": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "capabilities": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "CAPABILITY_IAM",
+              "CAPABILITY_NAMED_IAM"
+            ]
+          }
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "required": ["name"]
+    },
     "params": {
       "type": "string"
     },

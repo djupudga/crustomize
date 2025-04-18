@@ -2,6 +2,9 @@
   "name": "crustomize",
   "module": "index.ts",
   "type": "module",
+  "bin": {
+    "customize": "bin/customize"
+  },
   "scripts": {
     "test": "bun test",
     "lint": "bun run eslint .",
@@ -23,7 +26,10 @@
     "fast-json-patch": "^3.1.1",
     "handlebars": "^4.7.8",
     "indent-string": "^5.0.0",
+    "json-colorizer": "^3.0.1",
     "meow": "^13.2.0",
+    "ora": "^8.2.0",
+    "uuid": "^11.1.0",
     "yaml": "^2.7.0",
     "yaml-cfn": "^0.3.2"
   },

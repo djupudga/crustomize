@@ -1,5 +1,5 @@
 import meow from "meow"
-import { commands } from "./lib/"
+import { commands } from "./lib/commands/"
 
 const cli = meow(
   `
@@ -45,10 +45,21 @@ const cli = meow(
   },
 )
 
-const [path] = cli.input
+const [command, path] = cli.input
 
-if (path) {
-  commands.apply(path, cli.flags)
+type CommandName = keyof typeof commands
+
+function isCommand(name: string | undefined): name is CommandName {
+  return name !== undefined && name in commands
+}
+
+if (isCommand(command)) {
+  if (path) {
+    await commands[command](path, cli.flags)
+  } else {
+    cli.showHelp()
+  }
 } else {
-  cli.showHelp()
+  console.error(`Unknown command: "${command}".`)
+  process.exit(1)
 }

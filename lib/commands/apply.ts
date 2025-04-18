@@ -1,43 +1,30 @@
-import Ajv from "ajv"
-import crustomizeSchema from "./schemas/crustomize.json"
 import fs from "fs"
 import path from "path"
-import { AjvValidationError, handleError } from "./errors"
+import { handleError } from "../errors"
 import { yamlDump, yamlParse } from "yaml-cfn"
-import { processYaml } from "./process"
+import { processYaml } from "../process"
 import deepmerge from "deepmerge"
+import { lint } from "../lint"
+import type { ApplyFunction } from "./types.d"
+import { getManifest } from "../manifest"
 
-export type Flags = {
-  profile?: string
-  output: string | undefined
-  render: string
-  env: string
-}
 
-export type ApplyFunction = (path: string, flags: Flags) => void
-
-export type CrustomizeManifest = {
-  base: string
-  overlays?: string[]
-  params?: string
-  values: any
-}
 type BaseFiles = Record<string, any>
 type OverlayFiles = Record<string, any>
 
-export const apply: ApplyFunction = (crustomizePath, flags) => {
+export const apply: ApplyFunction = async (crustomizePath, flags) => {
   if (crustomizePath.endsWith("/")) {
     crustomizePath = crustomizePath.slice(0, -1)
   }
   try {
-    const manifestFilePath = `${crustomizePath}/crustomize.yml`
-    const manifestFile = fs.readFileSync(manifestFilePath, "utf8").toString()
-    const manifest = yamlParse(manifestFile) as CrustomizeManifest
-    const ajv = new Ajv()
-    const validate = ajv.compile(crustomizeSchema)
-    const valid = validate(manifest)
-    if (!valid) {
-      throw new AjvValidationError(validate.errors)
+    const manifest = getManifest(crustomizePath)
+    
+    // If the manifest defines params, then the --output parameter is required.
+    if (manifest.params && !flags.output) {
+      console.error(
+        "The --output parameter is required when the manifest defines params.",
+      )
+      process.exit(1)
     }
 
     // Load all files in the base directory.
@@ -77,16 +64,15 @@ export const apply: ApplyFunction = (crustomizePath, flags) => {
       merged = deepmerge(merged, baseFile)
     }
     const result = yamlDump(merged)
-    // Write results to --output file
+    // Write out the results
     if (flags.output) {
-      // Check if output is a directory
-      if (fs.lstatSync(flags.output).isDirectory()) {
+      if (!fs.lstatSync(flags.output).isDirectory()) {
         console.error(
-          `Output path "${flags.output}" is a directory. Please specify a file name.`,
+          `Output path "${flags.output}" is not a folder. Please specify a folder.`,
         )
         process.exit(1)
       } else {
-        fs.writeFileSync(flags.output, result)
+        fs.writeFileSync(path.join(flags.output, "template.yml"), result)
       }
     } else {
       console.log(result)
@@ -100,12 +86,15 @@ export const apply: ApplyFunction = (crustomizePath, flags) => {
         path.resolve(crustomizePath),
       )
       if (flags.output) {
-        fs.writeFileSync(path.join(flags.output, "params.yml"), paramsYaml)
-      } else {
-        console.log("\n---\n")
-        console.log("# Params file")
-        console.log(paramsYaml)
+        const paramsJson = yamlParse(paramsYaml)
+        fs.writeFileSync(
+          path.join(flags.output, "params.json"),
+          JSON.stringify(paramsJson, null, 2)
+        )
       }
+    }
+    if (flags.output) {
+      lint(path.join(flags.output, "template.yml"))
     }
   } catch (err) {
     if (process.env["DEBUG"]) console.error(err)

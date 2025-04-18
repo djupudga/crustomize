@@ -1,5 +1,11 @@
 # crustomize
+A Kustomize like CLI but for AWS CloudFormation templates.
 
+Though the tool is standalone, it requires a
+local installation of the AWS CLI and cnf-lint.
+
+
+## Installation
 You need to install 'bun' to run this project.
 https://bun.sh
 

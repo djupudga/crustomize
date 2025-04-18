@@ -1,6 +1,14 @@
 base: ../base
 overlays:
   - ./Template.yml
+stack:
+  name: foobar
+  capabilities:
+    - CAPABILITY_IAM
+    - CAPABILITY_NAMED_IAM
+  tags:
+    Name: foobar
+    Environment: dev
 params: ./params.yml
 values:
   NetworkMode: awsvpc

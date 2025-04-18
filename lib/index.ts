@@ -8,7 +8,3 @@ type Commands = {
 export const commands: Commands = {
   apply,
 }
-
-export function isCommand(cmd: string): cmd is keyof typeof commands {
-  return cmd in commands
-}

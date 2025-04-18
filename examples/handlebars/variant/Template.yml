@@ -1,7 +1,20 @@
 Resources:
   TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
     Properties:
-      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - "FARGATE"
+      ExecutionRoleArn: "arn:aws:iam::882288228822:role/ecsTaskExecutionRole"
+      Cpu: 256
+      Memory: 512
       {{#if values.Foo}}
-      Foo: "bar"
+      NetworkMode: "awsvpc"
       {{/if}}
+      ContainerDefinitions:
+        - Name: "myawsplanet"
+          Image: "1231323.dkr.ecr.eu-west-3.amazonaws.com/mydeveloperplanet/myawsplanet:latest"
+          MemoryReservation: 256
+          Memory: 512
+          PortMappings:
+            - ContainerPort: 8080
+              Protocol: tcp

@@ -107,7 +107,7 @@ export const helpers = {
    **/
   getParameter(profile?: string) {
     return (name: string, query?: string) => getParameter(name, query, profile)
-  }
+  },
   /**
    * Gets a secret from AWS Secrets Manager.
    * @param secretName The name of the secret.

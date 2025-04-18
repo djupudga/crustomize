@@ -1,4 +1,4 @@
-import { spawnSync } from "child_process"
+import { run } from "./run"
 
 interface CloudFormationOutput {
   OutputKey: string
@@ -47,18 +47,7 @@ function fetchOutputs(
  * @returns The standard output of the command.
  * @throws If the command fails or if there is an error.
  */
-function runAwsCommand(args: string[]): string {
-  const result = spawnSync("aws", args, { encoding: "utf-8" })
-
-  if (result.error) {
-    throw result.error
-  }
-
-  if (result.status !== 0) {
-    throw new Error(`Command failed: ${result.stderr}`)
-  }
-  return result.stdout
-}
+export const runAwsCommand = run.bind(null, "aws")
 
 /**
  * Synchronously looks up an Output from a CloudFormation stack by key.
@@ -138,8 +127,6 @@ export function getParameter(
 
   return runAwsCommand(args)
 }
-
-
 
 
 
