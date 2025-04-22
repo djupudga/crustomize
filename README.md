@@ -50,7 +50,10 @@ below you may find an example of how you could go about it.
 ```
 
 ## Installation
-You need to install 'bun' to run this project.
+
+Download the latest release or clone the repository. 
+
+You need to install 'bun' if you build from source.
 https://bun.sh
 
 To install dependencies:
@@ -59,14 +62,14 @@ To install dependencies:
 bun install
 ```
 
-To run:
-
-```bash
-bun run index.ts
-```
-
 To build:
 
 ```bash
 make bundle
+```
+
+To install the binary:
+
+```bash
+sudo cp dist/crustomize-<build> /usr/local/bin/crustomize
 ```
