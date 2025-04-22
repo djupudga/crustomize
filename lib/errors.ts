@@ -50,29 +50,29 @@ export class AjvValidationError extends Error {
   }
 }
 
-export function handleError(err: any, extra: string): void {
+export function handleError(err: any): void {
   if ("code" in err) {
     switch (err.code) {
       case "ENOENT":
-        console.error(`Error: file not found at ${extra}`)
+        console.error(`Error: file not found at ${err.path}`)
         break
       case "EACCES":
-        console.error(`Error: permission denied for ${extra}`)
+        console.error(`Error: permission denied for ${err.path}`)
         break
       case "EISDIR":
-        console.error(`Error: ${extra} is a directory`)
+        console.error(`Error: ${err.path} is a directory`)
         break
       case "EEXIST":
-        console.error(`Error: file already exists at ${extra}`)
+        console.error(`Error: file already exists at ${err.path}`)
         break
       case "ENOTDIR":
-        console.error(`Error: ${extra} is not a directory`)
+        console.error(`Error: ${err.path} is not a directory`)
         break
       case "ELOOP":
-        console.error(`Error: ${extra} is a symlink loop`)
+        console.error(`Error: ${err.path} is a symlink loop`)
         break
       case "ENOTEMPTY":
-        console.error(`Error: ${extra} is not empty`)
+        console.error(`Error: ${err.path} is not empty`)
         break
       default:
         if (err instanceof Error) {

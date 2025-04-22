@@ -54,7 +54,7 @@ export const deleteChangeSet: ApplyFunction = async (crustomizePath, flags) => {
     console.log(`Change set ${manifest.stack.name}-cs-${hash} deleted`)
   } catch (e) {
     spinner?.stop()
-    handleError(e, crustomizePath)
+    handleError(e)
   } finally {
     if (
       fs.existsSync("./.crustomize_deploy") && 

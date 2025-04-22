@@ -1,0 +1,16 @@
+Resources:
+  S3Bucket:
+    Properties:
+      BucketName: {{values.BucketName}}
+      {{#if values.Versioned}}
+      VersioningConfiguration:
+        Status: Enabled
+      {{/if}}
+      LifecycleConfiguration:
+        Rules:
+          - Id: ExpireOldVersions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 30
+            ExpirationInDays: {{values.ExpirationInDays}} 
+      Tags:
+{{indent (toYaml values.Tags) 6}}

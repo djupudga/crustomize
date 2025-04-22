@@ -71,10 +71,10 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
       if (e.message.includes("No changes to deploy")) {
         console.log(e.message)
       } else {
-        handleError(e, crustomizePath)
+        handleError(e)
       }
     } else {
-      handleError(e, crustomizePath)
+      handleError(e)
     }
       
   } finally {

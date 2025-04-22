@@ -123,7 +123,7 @@ export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
     console.log(colorize(JSON.parse(describeResult)))
   } catch (e) {
     spinner?.stop()
-    handleError(e, crustomizePath)
+    handleError(e)
   } finally {
     if (
       fs.existsSync("./.crustomize_deploy") && 

@@ -55,7 +55,7 @@ export const executeChangeSet: ApplyFunction = async (crustomizePath, flags) => 
     spinner?.stop()
   } catch (e) {
     spinner?.stop()
-    handleError(e, crustomizePath)
+    handleError(e)
   } finally {
     if (
       fs.existsSync("./.crustomize_deploy") && 

@@ -98,6 +98,6 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
     }
   } catch (err) {
     if (process.env["DEBUG"]) console.error(err)
-    handleError(err, crustomizePath)
+    handleError(err)
   }
 }
