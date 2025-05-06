@@ -112,15 +112,6 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
       const fileName = overlayPath.split("/").pop() as string
       overlayFiles[fileName] = yamlParse(file) || {}
     })
-
-    // Apply the overlay files to the base files
-    //for (const [fileName, baseFile] of Object.entries(baseFiles)) {
-    //  const overlayFile = overlayFiles[fileName]
-    //  if (overlayFile) {
-    //    baseFiles[fileName] = deepmerge(baseFile, overlayFile)
-    //  }
-    //}
-    // Finally merge all files into a single object
     
     // Merge all base files into a single object
     let merged = {}
@@ -137,6 +128,7 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
     }
 
     const result = yamlDump(merged)
+
     // Write out the results
     if (flags.output) {
       if (!fs.lstatSync(flags.output).isDirectory()) {
