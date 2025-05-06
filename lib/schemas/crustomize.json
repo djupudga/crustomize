@@ -45,6 +45,30 @@
       "not": {
         "required": ["base", "overlays"]
       }
+    },
+    "patches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "op": {
+            "type": "string",
+            "enum": [
+              "add",
+              "remove",
+              "replace",
+              "move",
+              "copy",
+              "test"
+            ]
+          },
+          "path": {
+            "type": "string"
+          },
+          "value": {}
+        },
+        "required": ["op", "path"]
+      }
     }
   },
   "required": ["base"],

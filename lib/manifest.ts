@@ -4,6 +4,12 @@ import fs from "fs"
 import { AjvValidationError } from "./errors"
 import { yamlParse } from "yaml-cfn"
 
+type JsonPatch = {
+  op: string,
+  path: string,
+  value?: any,
+}
+
 export type CrustomizeManifest = {
   base: string
   overlays?: string[]
@@ -13,7 +19,8 @@ export type CrustomizeManifest = {
     capabilities?: string[]
     tags?: Record<string, string>
   },
-  values: any
+  values: any,
+  patches?: JsonPatch[]
 }
 
 let cached: Record<string, any> = {}

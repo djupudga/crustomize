@@ -1,6 +1,9 @@
 clean:
 	rm -rf dist
 
+test:
+	bun test
+
 bundle: clean
 	mkdir -p dist
 	bun build ./index.ts --compile --target=bun-linux-x64 --outfile dist/crustomize-linux-x64

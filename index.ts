@@ -1,8 +1,12 @@
 import meow from "meow"
 import { commands } from "./lib/commands/"
+import {version} from "./package.json"
 
 const cli = meow(
   `
+  cruztomize
+    versin: ${version}
+
   Usage
     $ cruztomize <path> -e <engine> -c <file> -o <file>
   Parameters:

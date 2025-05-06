@@ -5,12 +5,76 @@ import { yamlDump, yamlParse } from "yaml-cfn"
 import { processYaml } from "../process"
 import deepmerge from "deepmerge"
 import { lint } from "../lint"
-import type { ApplyFunction } from "./types.d"
-import { getManifest } from "../manifest"
+import type { ApplyFunction, Flags } from "./types.d"
+import { getManifest, type CrustomizeManifest } from "../manifest"
+import { S3Client, GetObjectCommand, ListObjectsV2Command} from "@aws-sdk/client-s3"
+import { jsonpatch } from "json-p3"
 
 
 type BaseFiles = Record<string, any>
 type OverlayFiles = Record<string, any>
+
+async function getS3Files(
+  base: string,
+  flags: Flags,
+  manifest: CrustomizeManifest,
+): Promise<BaseFiles> {
+  const options = flags.profile ? { profile: flags.profile } : {}
+  const s3 = new S3Client(options)
+  const bucket = base.split("/")[2]
+  const prefix = base.split("/").slice(3).join("/")
+  const command = new ListObjectsV2Command({
+    Bucket: bucket,
+    Prefix: prefix,
+  })
+  const response = await s3.send(command)
+  if (!response.Contents) return {}
+
+  const files: BaseFiles = {}
+  for (const item of response.Contents) {
+    if (!item.Key) continue
+    if (item.Key.endsWith(".yaml") || item.Key.endsWith(".yml")) {
+      const key = item.Key
+      const params = {
+        Bucket: bucket,
+        Key: key,
+      }
+      const output = await s3.send(new GetObjectCommand(params))
+      const fileStr = await output.Body?.transformToString()
+      if (fileStr) {
+        const file = processYaml(fileStr, manifest, flags, base)
+        const fileName = key.split("/").pop() as string
+        files[fileName] = yamlParse(file) || {}
+      }
+    }
+  }
+  return files
+}
+
+
+async function getBaseFiles(
+  base: string,
+  crustomizePath: string,
+  flags: Flags,
+  manifest: CrustomizeManifest,
+): Promise<BaseFiles> {
+  if (base.startsWith("s3://")) {
+    return getS3Files(base, flags, manifest)
+  } else {
+    const basePath = path.resolve(crustomizePath, base)
+    const baseFileNames = fs.readdirSync(basePath)
+    const baseFiles =  baseFileNames.reduce<BaseFiles>((acc, fileName) => {
+      const filePath = `${basePath}/${fileName}`
+      if (!fs.lstatSync(filePath).isFile()) return acc
+
+      const fileStr = fs.readFileSync(filePath, "utf8").toString()
+      const file = processYaml(fileStr, manifest, flags, basePath)
+      acc[fileName] = yamlParse(file) || {}
+      return acc
+    }, {})
+    return baseFiles
+  }
+}
 
 export const apply: ApplyFunction = async (crustomizePath, flags) => {
   if (crustomizePath.endsWith("/")) {
@@ -28,16 +92,13 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
     }
 
     // Load all files in the base directory.
-    const baseFiles: BaseFiles = {}
-    const basePath = path.resolve(crustomizePath, manifest.base)
-    const baseFileNames = fs.readdirSync(basePath)
-    baseFileNames.forEach((fileName) => {
-      const filePath = `${basePath}/${fileName}`
-      if (!fs.lstatSync(filePath).isFile()) return
-      const fileStr = fs.readFileSync(filePath, "utf8").toString()
-      const file = processYaml(fileStr, manifest, flags, basePath)
-      baseFiles[fileName] = yamlParse(file) || {}
-    })
+    const baseFiles = await getBaseFiles(
+      manifest.base,
+      crustomizePath,
+      flags,
+      manifest
+    )
+
     // Load all overlay files
     const overlayFiles: OverlayFiles = {}
     const overlayPaths = (manifest.overlays || []).map((overlay) =>
@@ -51,18 +112,30 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
       const fileName = overlayPath.split("/").pop() as string
       overlayFiles[fileName] = yamlParse(file) || {}
     })
+
     // Apply the overlay files to the base files
-    for (const [fileName, baseFile] of Object.entries(baseFiles)) {
-      const overlayFile = overlayFiles[fileName]
-      if (overlayFile) {
-        baseFiles[fileName] = deepmerge(baseFile, overlayFile)
-      }
-    }
+    //for (const [fileName, baseFile] of Object.entries(baseFiles)) {
+    //  const overlayFile = overlayFiles[fileName]
+    //  if (overlayFile) {
+    //    baseFiles[fileName] = deepmerge(baseFile, overlayFile)
+    //  }
+    //}
     // Finally merge all files into a single object
+    
+    // Merge all base files into a single object
     let merged = {}
     for (const baseFile of Object.values(baseFiles)) {
       merged = deepmerge(merged, baseFile)
     }
+    // Merge all overlay files into the merged object
+    for (const overlayFile of Object.values(overlayFiles)) {
+      merged = deepmerge(merged, overlayFile)
+    }
+    // Apply JSON patches, if there are any
+    if (manifest.patches) {
+      merged = jsonpatch.apply(manifest.patches, merged) as any
+    }
+
     const result = yamlDump(merged)
     // Write out the results
     if (flags.output) {

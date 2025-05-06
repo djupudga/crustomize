@@ -3,7 +3,7 @@
   "module": "index.ts",
   "type": "module",
   "license": "MIT",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "bin": {
     "customize": "bin/customize"
   },
@@ -21,6 +21,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.798.0",
     "@types/ejs": "^3.1.5",
     "ajv": "^8.17.1",
     "deepmerge": "^4.3.1",
@@ -29,6 +30,7 @@
     "handlebars": "^4.7.8",
     "indent-string": "^5.0.0",
     "json-colorizer": "^3.0.1",
+    "json-p3": "^2.2.2",
     "meow": "^13.2.0",
     "ora": "^8.2.0",
     "uuid": "^11.1.0",
