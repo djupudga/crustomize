@@ -1,20 +1,16 @@
 import fs from "fs"
-import { getManifest } from "../manifest";
-import type { ApplyFunction } from "./types";
-import { apply } from "./apply";
-import { runAwsCommand } from "../aws";
+import { getManifest } from "../manifest"
+import type { ApplyFunction } from "./types"
+import { apply } from "./apply"
+import { runAwsCommand } from "../aws"
 import ora, { type Ora } from "ora"
-import { handleError } from "../errors";
-import { hashFile } from "../file-hasher";
+import { handleError } from "../errors"
+import { hashFile } from "../file-hasher"
 import { colorize } from "json-colorizer"
+import { cleanUpAwsFiles } from "../cleanup"
 
 function stackExists(stackName: string, profile?: string): boolean {
-  const args = [
-    "cloudformation",
-    "describe-stacks",
-    "--stack-name",
-    stackName,
-  ]
+  const args = ["cloudformation", "describe-stacks", "--stack-name", stackName]
   if (profile) {
     args.push("--profile", profile)
   }
@@ -46,11 +42,11 @@ export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
     }
 
     if (!flags.output) {
-      fs.mkdirSync('./.crustomize_deploy', { recursive: true })
-      flags.output = './.crustomize_deploy'
+      fs.mkdirSync("./.crustomize_deploy", { recursive: true })
+      flags.output = "./.crustomize_deploy"
     }
 
-    apply(crustomizePath, flags)
+    await apply(crustomizePath, flags)
 
     const hash = await hashFile(`${flags.output}/template.yml`)
 
@@ -66,10 +62,7 @@ export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
       args.push("--profile", flags.profile)
     }
     if (manifest.stack.capabilities) {
-      args.push(
-        "--capabilities",
-        manifest.stack.capabilities.join(" "),
-      )
+      args.push("--capabilities", manifest.stack.capabilities.join(" "))
     }
     if (manifest.stack.tags) {
       args.push(
@@ -104,7 +97,7 @@ export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
       waitArgs.push("--profile", flags.profile)
     }
     runAwsCommand(waitArgs)
-    
+
     const describeArgs = [
       "cloudformation",
       "describe-change-set",
@@ -123,13 +116,9 @@ export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
     console.log(colorize(JSON.parse(describeResult)))
   } catch (e) {
     spinner?.stop()
+    cleanUpAwsFiles()
     handleError(e)
   } finally {
-    if (
-      fs.existsSync("./.crustomize_deploy") && 
-      fs.lstatSync("./.crustomize_deploy").isDirectory()
-    ) {
-      fs.rmdirSync("./.crustomize_deploy", { recursive: true })
-    }
+    cleanUpAwsFiles()
   }
 }

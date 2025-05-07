@@ -5,6 +5,7 @@ import { apply } from "./apply";
 import { runAwsCommand } from "../aws";
 import ora, { type Ora } from "ora"
 import { handleError } from "../errors";
+import { cleanUpAwsFiles } from "../cleanup";
 
 export const deploy: ApplyFunction = async (crustomizePath, flags) => {
   let spinner: Ora | undefined
@@ -30,7 +31,7 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
       flags.output = './.crustomize_deploy'
     }
 
-    apply(crustomizePath, flags)
+    await apply(crustomizePath, flags)
 
     const args = [
       "cloudformation",
@@ -71,18 +72,14 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
       if (e.message.includes("No changes to deploy")) {
         console.log(e.message)
       } else {
+        cleanUpAwsFiles()
         handleError(e)
       }
     } else {
+      cleanUpAwsFiles()
       handleError(e)
     }
-      
   } finally {
-    if (
-      fs.existsSync("./.crustomize_deploy") && 
-      fs.lstatSync("./.crustomize_deploy").isDirectory()
-    ) {
-      fs.rmdirSync("./.crustomize_deploy", { recursive: true })
-    }
+    cleanUpAwsFiles()
   }
 }

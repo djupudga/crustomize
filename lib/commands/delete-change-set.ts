@@ -6,6 +6,7 @@ import { runAwsCommand } from "../aws";
 import ora, { type Ora } from "ora"
 import { handleError } from "../errors";
 import { hashFile } from "../file-hasher";
+import { cleanUpAwsFiles } from "../cleanup";
 
 export const deleteChangeSet: ApplyFunction = async (crustomizePath, flags) => {
   let spinner: Ora | undefined
@@ -31,7 +32,7 @@ export const deleteChangeSet: ApplyFunction = async (crustomizePath, flags) => {
       flags.output = './.crustomize_deploy'
     }
 
-    apply(crustomizePath, flags)
+    await apply(crustomizePath, flags)
 
     const hash = await hashFile(`${flags.output}/template.yml`)
 
@@ -54,13 +55,9 @@ export const deleteChangeSet: ApplyFunction = async (crustomizePath, flags) => {
     console.log(`Change set ${manifest.stack.name}-cs-${hash} deleted`)
   } catch (e) {
     spinner?.stop()
+    cleanUpAwsFiles()
     handleError(e)
   } finally {
-    if (
-      fs.existsSync("./.crustomize_deploy") && 
-      fs.lstatSync("./.crustomize_deploy").isDirectory()
-    ) {
-      fs.rmdirSync("./.crustomize_deploy", { recursive: true })
-    }
+    cleanUpAwsFiles()
   }
 }
