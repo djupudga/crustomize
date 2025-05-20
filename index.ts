@@ -4,11 +4,11 @@ import {version} from "./package.json"
 
 const cli = meow(
   `
-  cruztomize
+  crustomize
     version: v${version}
 
   Usage
-    $ cruztomize [command] <path> -e <engine> -c <file> -o <file>
+    $ crustomize [command] <path> -e <engine> -c <file> -o <file>
 
   Commands:
     apply              Applies overlays to a base file
