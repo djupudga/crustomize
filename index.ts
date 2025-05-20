@@ -5,7 +5,7 @@ import {version} from "./package.json"
 const cli = meow(
   `
   cruztomize
-    versin: ${version}
+    version: v${version}
 
   Usage
     $ cruztomize <path> -e <engine> -c <file> -o <file>
@@ -16,13 +16,22 @@ const cli = meow(
     --output, -o    Output file [Default: standard out]
     --profile, -p   AWS CLI profile [Default: default]
     --env, -e       Environment file
+    --help, -h      Show help
+    --version, -v   Show version
   Description:
     Applies overlays in <path> and performs pre-processing
     before outputting results to stdout or --output path.
 `,
   {
     importMeta: import.meta,
+    autoVersion: false,
     flags: {
+      version: {
+        type: "boolean",
+        isRequired: false,
+        default: false,
+        aliases: ["v"],
+      },
       profile: {
         type: "string",
         isRequired: false,
@@ -55,6 +64,15 @@ type CommandName = keyof typeof commands
 
 function isCommand(name: string | undefined): name is CommandName {
   return name !== undefined && name in commands
+}
+
+if (cli.flags.version) {
+  console.log(`cruztomize: v${version}`)
+  process.exit(0)
+}
+if (command == undefined) {
+  cli.showHelp()
+  process.exit(0)
 }
 
 if (isCommand(command)) {
