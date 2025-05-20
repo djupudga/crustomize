@@ -51,6 +51,9 @@ async function getS3Files(
   return files
 }
 
+function ymlFilter(fileName: string): boolean {
+  return fileName.endsWith(".yaml") || fileName.endsWith(".yml")
+}
 
 async function getBaseFiles(
   base: string,
@@ -62,7 +65,7 @@ async function getBaseFiles(
     return getS3Files(base, flags, manifest)
   } else {
     const basePath = path.resolve(crustomizePath, base)
-    const baseFileNames = fs.readdirSync(basePath)
+    const baseFileNames = fs.readdirSync(basePath).filter(ymlFilter) 
     const baseFiles =  baseFileNames.reduce<BaseFiles>((acc, fileName) => {
       const filePath = `${basePath}/${fileName}`
       if (!fs.lstatSync(filePath).isFile()) return acc
