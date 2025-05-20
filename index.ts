@@ -8,7 +8,14 @@ const cli = meow(
     version: v${version}
 
   Usage
-    $ cruztomize <path> -e <engine> -c <file> -o <file>
+    $ cruztomize [command] <path> -e <engine> -c <file> -o <file>
+
+  Commands:
+    apply              Applies overlays to a base file
+    deploy             Deploys a CloudFormation stack
+    create-change-set  Creates a CloudFormation change set
+    execute-change-set Executes a CloudFormation change set
+    delete-change-set  Deletes a CloudFormation change set
   Parameters:
     <path> Path to overlay folder
   Options
@@ -20,7 +27,8 @@ const cli = meow(
     --version, -v   Show version
   Description:
     Applies overlays in <path> and performs pre-processing
-    before outputting results to stdout or --output path.
+    before outputting results to stdout or --output path
+    or to a CloudFormation stack.
 `,
   {
     importMeta: import.meta,
