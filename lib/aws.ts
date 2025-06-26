@@ -5,6 +5,8 @@ interface CloudFormationOutput {
   OutputValue: string
 }
 
+const outputCache = new Map<string, CloudFormationOutput[]>()
+
 /**
  * Synchronously fetches Outputs from a CloudFormation stack using the AWS CLI.
  *
@@ -17,6 +19,10 @@ function fetchOutputs(
   stackName: string,
   profile?: string,
 ): CloudFormationOutput[] {
+  // Check if the outputs are already cached
+  if (outputCache.has(stackName)) {
+    return outputCache.get(stackName) || []
+  }
   // Construct the AWS CLI command arguments
   const args = [
     "cloudformation",
@@ -35,6 +41,8 @@ function fetchOutputs(
   try {
     // Parse the JSON output from the AWS CLI
     const outputs: CloudFormationOutput[] = JSON.parse(result)
+    // Cache the outputs to avoid redundant calls
+    outputCache.set(stackName, outputs)
     return outputs
   } catch (err) {
     throw new Error(`Failed to parse JSON output: ${err}`)
@@ -127,7 +135,6 @@ export function getParameter(
 
   return runAwsCommand(args)
 }
-
 
 
 

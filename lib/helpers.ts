@@ -109,15 +109,14 @@ export const helpers = {
     return (name: string, query?: string) => getParameter(name, query, profile)
   },
   /**
-   * Gets a secret from AWS Secrets Manager.
-   * @param secretName The name of the secret.
-   * @param query JMESPath query, if omitted SecretString.
-   * @param profile The AWS CLI profile to use.
-   * @returns The value of the secret.
+   * Picks value if not null or undedefined, otherwise defaultValue.
+   * @param value The value to check.
+   * @param defaultValue The default value to return if the value is null or undefined.
+   * @returns The picked value.
    * @example
-   *  {{ getSecret("my-secret", "username") }}
+   *  {{ valueOrDefault(env.DockerImage, "foo/bar:latest") }}
    */
-  getSecret(profile?: string) {
-    return (secretName: string, query?: string) => getSecret(secretName, query, profile)
+  valueOrDefault(value: any, defaultValue: any) {
+    return value != null ? value : defaultValue
   }
 }

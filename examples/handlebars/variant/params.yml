@@ -1,7 +1,7 @@
 - ParameterKey: EnvironmentName
   ParameterValue: {{ values.EnvironmentName }}
 - ParameterKey: VpcId
-  ParameterValue: { { lookup values.VpcStackName "VPC" } }
+  ParameterValue: {{ lookup values.VpcStackName "VPC" }}
 - ParameterKey: Account
   ParameterValue: {{ env.account }}
 - ParameterKey: Region
