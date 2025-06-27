@@ -43,6 +43,7 @@ jobs:
             dist/crustomize-darwin-x64
             dist/crustomize-linux-arm64
             dist/crustomize-linux-x64
+            dist/crustomize-linux-x64-musl
           # Optional: Customize the release name (defaults to the tag name)
           # name: "My Awesome App ${{ github.ref_name }}"
           # Optional: Define release notes body explicitly
