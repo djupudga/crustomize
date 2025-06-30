@@ -161,7 +161,7 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
         )
       }
     }
-    if (flags.output) {
+    if (flags.output && flags.lint) {
       lint(path.join(flags.output, "template.yml"))
     }
   } catch (err) {

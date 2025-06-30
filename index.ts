@@ -22,6 +22,7 @@ const cli = meow(
     --render, -r    Template engine [Default: ejs]
     --output, -o    Output file [Default: standard out]
     --profile, -p   AWS CLI profile [Default: default]
+    --lint, -l      Lint the output file (requires cf-lint)
     --env, -e       Environment file
     --help, -h      Show help
     --version, -v   Show version
@@ -61,6 +62,12 @@ const cli = meow(
         type: "string",
         isRequired: false,
         aliases: ["e"],
+      },
+      lint: {
+        type: "boolean",
+        isRequired: false,
+        default: false,
+        aliases: ["l"],
       },
     },
   },

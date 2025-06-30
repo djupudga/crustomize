@@ -15,4 +15,5 @@ jobs:
       - name: Tests
         run: |
           bun i
+          bunx tsc
           bun test

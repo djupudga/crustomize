@@ -2,7 +2,7 @@ import fs from "fs"
 import indentString from "indent-string"
 import path from "path"
 import { yamlDump } from "yaml-cfn"
-import { getSecret, getParameter, lookup } from "./aws"
+import { getParameter, lookup } from "./aws"
 
 export const helpers = {
   /**

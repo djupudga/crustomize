@@ -4,7 +4,10 @@ clean:
 test:
 	bun test
 
-bundle: clean
+typecheck:
+	bunx tsc
+
+bundle: clean typecheck
 	mkdir -p dist
 	bun build ./index.ts --compile --target=bun-linux-x64 --outfile dist/crustomize-linux-x64
 	bun build ./index.ts --compile --target=bun-linux-arm64 --outfile dist/crustomize-linux-arm64

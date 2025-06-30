@@ -1,7 +1,8 @@
 import ejs from "ejs"
 import fs from "fs"
 import handlebars from "handlebars"
-import type { CrustomizeManifest, Flags } from "./apply"
+import type { Flags } from "./commands/types.d"
+import type { CrustomizeManifest } from "./manifest"
 import { helpers } from "./helpers"
 import { yamlParse } from "yaml-cfn"
 

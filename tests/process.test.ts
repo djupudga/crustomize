@@ -1,5 +1,6 @@
-import { expect, test, mock } from "bun:test"
+import { expect, test } from "bun:test"
 import { processYaml } from "../lib/process"
+import type { CrustomizeManifest } from "../lib/manifest"
 
 test("ejs", () => {
   // Setup
@@ -13,7 +14,7 @@ test("ejs", () => {
       bar: "bar",
       baz: "baz",
     },
-  }
+  } as CrustomizeManifest
   const flags = {
     render: "ejs",
     env: "",
@@ -37,7 +38,7 @@ test("handlebars", () => {
       bar: "bar",
       baz: "baz",
     },
-  }
+  } as CrustomizeManifest
   const flags = {
     render: "handlebars",
     env: "",
@@ -52,7 +53,7 @@ test("handlebars", () => {
 test("env", () => {
   // Setup
   const yamlString = `foo: {{env.foo}}`
-  const manifest = {}
+  const manifest = {} as CrustomizeManifest
   const flags = {
     render: "handlebars",
     env: "",
@@ -68,7 +69,7 @@ test("env", () => {
 test("env with env file", () => {
   // Setup
   const yamlString = `foo: {{env.foo}}`
-  const manifest = {}
+  const manifest = {} as CrustomizeManifest
   const flags = {
     render: "handlebars",
     env: "./tests/fixtures/env.yml",
@@ -96,7 +97,7 @@ base64: <%= toBase64(values.bar) %>`
       bar: "bar",
       baz: "alongstring",
     },
-  }
+  } as CrustomizeManifest
   const flags = {
     render: "ejs",
     env: "",
@@ -125,7 +126,7 @@ base64: {{toBase64 values.bar}}`
       bar: "bar",
       baz: "alongstring",
     },
-  }
+  } as CrustomizeManifest
   const flags = {
     render: "handlebars",
     env: "",
