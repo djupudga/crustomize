@@ -20,6 +20,12 @@ export function lint(crustomizePath: string) {
 
   if (result.status !== 0) {
     console.error(
+      "cfn-ling exit code: " + result.status
+    )
+    console.error(
+      result.stdout
+    )
+    console.error(
       result.stderr
     )
     console.error(
