@@ -80,34 +80,6 @@ export function lookup(
 }
 
 /**
- * Synchronously fetches a secret from AWS Secrets Manager.
- *
- * @param secretName - The name of the secret.
- * @param query - The query string to filter the secret.
- * @param profile - The AWS CLI profile to use.
- * @returns The secret value if found; otherwise, null.
- */
-export function getSecret(
-  secretName: string,
-  query?: string,
-  profile?: string,
-): string {
-  const args = [
-    "secretsmanager",
-    "get-secret-value",
-    "--secret-id",
-    secretName,
-    "--query",
-  ]
-  if (query) args.push(query)
-  else args.push("SecretString")
-
-  if (profile) args.push("--profile", profile)
-
-  return runAwsCommand(args)
-}
-
-/**
  * Synchronously fetches a parameter from AWS Systems Manager Parameter Store.
  *
  * @param name - The name of the parameter.
@@ -135,7 +107,6 @@ export function getParameter(
 
   return runAwsCommand(args)
 }
-
 
 
 
