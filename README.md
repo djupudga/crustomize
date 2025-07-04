@@ -22,6 +22,9 @@ parameters passed to the AWS CLI or bash scripts.
 Also, you won't really need to use parameters in your templates
 because the overlays will basically do this for you.
 
+For a more detailed guide and additional documentation see
+[docs/index.md](docs/index.md).
+
 ## Usage
 Like kustomize, crustomize allows you to create base CloudFormation templates
 and then apply patches to them. How you structure your project is up to you,
