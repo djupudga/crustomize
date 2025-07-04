@@ -19,10 +19,10 @@ const cli = meow(
   Parameters:
     <path> Path to overlay folder
   Options
-    --render, -r    Template engine [Default: ejs]
+    --render, -r    Template engine [Default: handlebars]
     --output, -o    Output file [Default: standard out]
     --profile, -p   AWS CLI profile [Default: default]
-    --lint, -l      Lint the output file (requires cf-lint)
+    --lint, -l      Lint the output file (requires cfn-lint)
     --env, -e       Environment file
     --help, -h      Show help
     --version, -v   Show version
