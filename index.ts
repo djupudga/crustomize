@@ -82,7 +82,7 @@ function isCommand(name: string | undefined): name is CommandName {
 }
 
 if (cli.flags.version) {
-  console.log(`cruztomize: v${version}`)
+  console.log(`crustomize: v${version}`)
   process.exit(0)
 }
 if (command == undefined) {
