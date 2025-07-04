@@ -10,8 +10,12 @@ test("crustomize a path", async() => {
   }
   let results = ""
   const old = console.log
-  console.log = (r) => { results = r }
-  await apply(crustomizePath, flags)
+  try {
+    console.log = (r) => { results = r }
+    await apply(crustomizePath, flags)
+  } finally {
+    console.log = old
+  }
   expect(results).toEqualIgnoringWhitespace(`
 AWSTemplateFormatVersion: 2010-09-09
 Resources:
@@ -34,7 +38,6 @@ Resources:
             Status: Enabled
             NoncurrentVersionExpirationInDays: 30
             ExpirationInDays: 123
-`)
-  console.log = old
+  `)
 })
 
