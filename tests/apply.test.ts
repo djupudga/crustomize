@@ -1,5 +1,7 @@
 import { test, expect } from "bun:test"
 import { apply } from "../lib/commands/apply"
+import fs from "fs"
+import path from "path"
 
 test("crustomize a path", async() => {
   const crustomizePath = "tests/fixtures/base_variant"
@@ -36,5 +38,20 @@ Resources:
             ExpirationInDays: 123
 `)
   console.log = old
+})
+
+test("creates output directory if missing", async () => {
+  const crustomizePath = "tests/fixtures/base_variant"
+  const outputPath = "tests/tmp_output"
+  fs.rmSync(outputPath, { recursive: true, force: true })
+  const flags = {
+    render: "handlebars",
+    env: "",
+    profile: "",
+    output: outputPath,
+  }
+  await apply(crustomizePath, flags)
+  expect(fs.existsSync(path.join(outputPath, "template.yml"))).toBe(true)
+  fs.rmSync(outputPath, { recursive: true, force: true })
 })
 
