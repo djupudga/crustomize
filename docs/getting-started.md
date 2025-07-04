@@ -31,5 +31,21 @@ to the base templates and overlays.
     crustomize.yml
 ```
 
-Run `crustomize build variants/prod` to produce a merged template.
+An example `crustomize.yml` might look like this:
+
+```yaml
+base: ../base
+overlays:
+  - ./Template.yml
+params: ./params.yml
+values:
+  NetworkMode: awsvpc
+  VpcStackName: SomeName
+  Foo: true
+```
+
+You can find complete sample projects under the [examples](../examples)
+folder in the repository.
+
+Run `crustomize apply variants/prod` to produce a merged template.
 
