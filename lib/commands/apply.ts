@@ -134,6 +134,9 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
 
     // Write out the results
     if (flags.output) {
+      if (!fs.existsSync(flags.output)) {
+        fs.mkdirSync(flags.output, { recursive: true })
+      }
       if (!fs.lstatSync(flags.output).isDirectory()) {
         console.error(
           `Output path "${flags.output}" is not a folder. Please specify a folder.`,
