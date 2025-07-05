@@ -19,7 +19,6 @@ type Data = {
   getFile: (file: string) => string
   fileToBase64: (file: string) => string
   lookupCfOutput: (stackName: string, key: string) => string
-  getSecret: (secretName: string, query?: string) => string
   getParameter: (name: string, query?: string) => string
   valueOrDefault: (value: any, defaultValue: any) => any
 }
