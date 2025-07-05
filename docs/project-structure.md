@@ -69,6 +69,7 @@ crustomize deploy path/to/variant
 crustomize create-change-set path/to/variant
 crustomize execute-change-set path/to/variant
 crustomize delete-change-set path/to/variant
+crustomize validate path/to/variant
 ```
 
 ### Environment variables
