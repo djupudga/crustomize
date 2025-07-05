@@ -12,6 +12,7 @@ local installation of the AWS CLI and cnf-lint.
 - Deploy to AWS
 - Create, execute and delete changesets
 - Validate templates with cnf-lint
+- Validate templates against AWS with `validate`
 
 Why would you use this? Normally I would recommend using AWS CDK or
 Terraform, but if you are already using CloudFormation and perhaps
