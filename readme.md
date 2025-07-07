@@ -2,7 +2,7 @@
 A Kustomize like CLI but for AWS CloudFormation templates.
 
 Though the tool is standalone, it requires a
-local installation of the AWS CLI and cnf-lint.
+local installation of the AWS CLI and cfn-lint.
 
 > **Note:** This is a work in progress and is not yet ready for production use.
 > Also, the templates must end with `.yml`.
@@ -11,7 +11,7 @@ local installation of the AWS CLI and cnf-lint.
 - Apply patches to CloudFormation templates
 - Deploy to AWS
 - Create, execute and delete changesets
-- Validate templates with cnf-lint
+- Validate templates with cfn-lint
 - Validate templates against AWS with `validate`
 
 Why would you use this? Normally I would recommend using AWS CDK or

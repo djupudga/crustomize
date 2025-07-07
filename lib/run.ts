@@ -8,7 +8,10 @@ import { spawnSync } from "child_process"
  * @throws If the command fails or if there is an error.
  */
 export function run(cmd: string, args: string[]) {
-  const result = spawnSync(cmd, args, { encoding: "utf-8" })
+  const result = spawnSync(cmd, args, {
+    encoding: "utf-8",
+    env: process.env,
+  })
 
   if (result.error) {
     throw result.error
