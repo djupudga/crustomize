@@ -1,6 +1,6 @@
 # Project Structure
 
-Crustomize expects a directory containing a **crustomize.yml** manifest. The manifest defines the base templates, overlay files, optional parameters and stack information. A common layout is to keep reusable base templates under a `base/` folder and variants that inherit from the base under `variants/`.
+Crustomize expects a directory containing a **crustomize.yml** manifest. The manifest defines the base templates, overlay files, optional parameters, stack information and optional settings like the render engine and AWS profile. These settings override the corresponding command line flags. A common layout is to keep reusable base templates under a `base/` folder and variants that inherit from the base under `variants/`.
 
 ```
 my-app/
@@ -24,6 +24,8 @@ The `crustomize.yml` file inside each variant references the base directory and 
 
 ```yaml
 base: ../base
+render: handlebars
+profile: my-profile
 overlays:
   - ./Template.yml
 stack:

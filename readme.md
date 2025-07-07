@@ -25,6 +25,8 @@ because the overlays will basically do this for you.
 
 For a more detailed guide and additional documentation see
 [docs/index.md](docs/index.md).
+You may store default CLI flags in a `.crustomizerc` file in your project
+directory. See [docs/config-file.md](docs/config-file.md) for details.
 
 ## Usage
 Like kustomize, crustomize allows you to create base CloudFormation templates

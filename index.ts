@@ -1,5 +1,6 @@
 import meow from "meow"
 import { commands } from "./lib/commands/"
+import { applyConfig } from "./lib/config"
 import { version } from "./package.json"
 
 const cli = meow(
@@ -20,13 +21,15 @@ const cli = meow(
   Parameters:
     <path> Path to overlay folder
   Options
-    --render, -r    Template engine [Default: handlebars]
-    --output, -o    Output file [Default: standard out]
-    --profile, -p   AWS CLI profile [Default: default]
+    --render, -r    Template engine, default is "handlebars"
+    --output, -o    Output directory
+    --profile, -p   AWS CLI profile, default is "default"
+    --config, -c    Config file with flag defaults
     --lint, -l      Lint the output file (requires cfn-lint)
     --env, -e       Environment file
     --help, -h      Show help
     --version, -v   Show version
+    --ci, -i        CI/CD mode
   Description:
     Applies overlays in <path> and performs pre-processing
     before outputting results to stdout or --output path
@@ -42,17 +45,26 @@ const cli = meow(
         default: false,
         aliases: ["v"],
       },
+      ci: {
+        type: "boolean",
+        isRequired: false,
+        default: false,
+        aliases: ["i"],
+      },
       profile: {
         type: "string",
         isRequired: false,
         aliases: ["p"],
-        // default: "default",
       },
       render: {
         type: "string",
         isRequired: false,
         aliases: ["r"],
-        default: "handlebars",
+      },
+      config: {
+        type: "string",
+        isRequired: false,
+        aliases: ["c"],
       },
       output: {
         type: "string",
@@ -93,6 +105,7 @@ if (command == undefined) {
 
 if (isCommand(command)) {
   if (path) {
+    applyConfig(cli.flags)
     await commands[command](path, cli.flags)
   } else {
     cli.showHelp()

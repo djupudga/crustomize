@@ -24,7 +24,7 @@ function stackExists(stackName: string, profile?: string): boolean {
 
 export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
   let spinner: Ora | undefined
-  if (!flags.silent) {
+  if (!flags.ci) {
     spinner = ora("Creating CloudFormation change set...").start()
   } else {
     console.log("Creating CloudFormation change set...")
@@ -35,6 +35,14 @@ export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
     }
 
     const manifest = getManifest(crustomizePath)
+
+    // Manifest values override any provided flags
+    if (manifest.render) {
+      flags.render = manifest.render
+    }
+    if (manifest.profile) {
+      flags.profile = manifest.profile
+    }
 
     if (!manifest.stack) {
       console.error("'stack' is required in the manifest for this operation.")

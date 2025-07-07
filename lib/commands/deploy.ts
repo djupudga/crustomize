@@ -9,7 +9,7 @@ import { cleanUpAwsFiles } from "../cleanup";
 
 export const deploy: ApplyFunction = async (crustomizePath, flags) => {
   let spinner: Ora | undefined
-  if (!flags.silent) {
+  if (!flags.ci) {
     spinner = ora("Deploying CloudFormation stack...").start()
   } else {
     console.log("Deploying CloudFormation stack...")
@@ -20,6 +20,14 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
     }
 
     const manifest = getManifest(crustomizePath)
+
+    // Manifest values override any provided flags
+    if (manifest.render) {
+      flags.render = manifest.render
+    }
+    if (manifest.profile) {
+      flags.profile = manifest.profile
+    }
 
     if (!manifest.stack) {
       console.error("'stack' is required in the manifest for deployment.")

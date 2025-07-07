@@ -40,6 +40,13 @@
     "params": {
       "type": "string"
     },
+    "render": {
+      "type": "string",
+      "enum": ["handlebars", "ejs"]
+    },
+    "profile": {
+      "type": "string"
+    },
     "values": {
       "type": "object",
       "not": {
