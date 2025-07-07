@@ -16,4 +16,4 @@ jobs:
         run: |
           bun i
           bunx tsc
-          bun test
+          AWS_REGION=us-east-1 bun test
