@@ -8,6 +8,7 @@ Crustomize lets you build reproducible AWS CloudFormation deployments by merging
 - [Structuring your project](project-structure.md)
 - Writing templates and overlays
 - Deploying to AWS
+- [Command line reference](commands.md)
 - References
   - [crustomize.yml file](crustomize-yml.md)
   - [.crustomizerc config](config-file.md)

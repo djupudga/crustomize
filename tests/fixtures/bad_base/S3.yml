@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  S3Bucket:
+    Type: "AWS::S3::Bucketiboo"
+    Properties:
+      BucketNamensifoo: dd
+      Tags:
+      - Key: Name
+        Value: !Sub "${AWS::StackName}-bucket"
