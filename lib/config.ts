@@ -24,9 +24,7 @@ export function applyConfig(flags: Flags) {
           throw new Error(`Error reading .crustomizerc - unknown config key: ${key}`)
 
         }
-        if (flags[key as keyof Flags] === undefined || flags[key as keyof Flags] === "") {
-          flags[key as keyof Flags] = value
-        }
+        flags[key as keyof Flags] = value
       }
       // Set default values if not already set
       if (flags.render === undefined) {

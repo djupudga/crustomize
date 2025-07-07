@@ -4,7 +4,7 @@ import { handleError } from "../errors"
 import { yamlDump, yamlParse } from "yaml-cfn"
 import { processYaml } from "../process"
 import deepmerge from "deepmerge"
-import { lint } from "../lint"
+import { lint, lintStdin } from "../lint"
 import type { ApplyFunction, Flags } from "./types.d"
 import { getManifest, type CrustomizeManifest } from "../manifest"
 import { S3Client, GetObjectCommand, ListObjectsV2Command} from "@aws-sdk/client-s3"
@@ -153,7 +153,13 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
       } else {
         fs.writeFileSync(path.join(flags.output, "template.yml"), result)
       }
+      if (flags.lint) {
+        lint(path.join(flags.output, "template.yml"))
+      }
     } else {
+      if (flags.lint) {
+        lintStdin(result)
+      }
       console.log(result)
     }
     if (manifest.params) {
@@ -171,9 +177,6 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
           JSON.stringify(paramsJson, null, 2)
         )
       }
-    }
-    if (flags.output && flags.lint) {
-      lint(path.join(flags.output, "template.yml"))
     }
   } catch (err) {
     if (process.env["DEBUG"]) console.error(err)
