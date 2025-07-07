@@ -5,8 +5,14 @@ const configPath = "tests/fixtures/config_defaults/.crustomizerc"
 
 test("loads defaults from config file", () => {
   const flags: any = { config: configPath }
-  applyConfig(flags)
-  expect(flags.render).toBe("ejs")
-  expect(flags.profile).toBe("confprof")
+  const copy = applyConfig(flags)
+  expect(copy.render).toBe("ejs")
+  expect(copy.profile).toBe("confprof")
 })
 
+test("sets defaults if not already set", () => {
+  const flags: any = {}
+  const copy = applyConfig(flags)
+  expect(copy.render).toBe("handlebars")
+  expect(copy.profile).toBe("default")
+})
