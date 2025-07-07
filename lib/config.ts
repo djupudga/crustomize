@@ -3,7 +3,8 @@ import path from "path"
 import { yamlParse } from "yaml-cfn"
 import type { Flags } from "./commands/types.d"
 
-export function applyConfig(flags: Flags) {
+export function applyConfig(flags: Flags): Flags {
+  const copy = { ...flags }
   const configPath = flags.config
     ? path.resolve(process.cwd(), flags.config)
     : path.resolve(process.cwd(), ".crustomizerc")
@@ -24,14 +25,7 @@ export function applyConfig(flags: Flags) {
           throw new Error(`Error reading .crustomizerc - unknown config key: ${key}`)
 
         }
-        flags[key as keyof Flags] = value
-      }
-      // Set default values if not already set
-      if (flags.render === undefined) {
-        flags.render = "handlebars"
-      }
-      if (flags.profile === undefined) {
-        flags.profile = "default"
+        copy[key as keyof Flags] = value
       }
     } catch (e) {
       console.error(`Unable to load config file: ${configPath}`)
@@ -39,4 +33,12 @@ export function applyConfig(flags: Flags) {
       process.exit(1)
     }
   }
+  // Set default values if not already set
+  if (!copy.render) {
+    copy.render = "handlebars"
+  }
+  if (!copy.profile) {
+    copy.profile = "default"
+  }
+  return copy
 }

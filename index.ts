@@ -105,8 +105,8 @@ if (command == undefined) {
 
 if (isCommand(command)) {
   if (path) {
-    applyConfig(cli.flags)
-    await commands[command](path, cli.flags)
+    const flags = applyConfig(cli.flags)
+    await commands[command](path, flags)
   } else {
     cli.showHelp()
   }
