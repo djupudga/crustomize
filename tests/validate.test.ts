@@ -1,5 +1,14 @@
-import { test, expect } from "bun:test"
+import { test, expect, mock } from "bun:test"
 import { validate } from "../lib/commands/validate"
+
+let callback: () => string = () => "OK"
+mock.module("../lib/aws", () => {
+  return {
+    runAwsCommand: () => {
+      return callback()
+    },
+  }
+})
 
 test("validate prints aws output", async () => {
   const flags = { render: "handlebars", env: "", profile: "" }
@@ -13,10 +22,13 @@ test("validate prints aws output", async () => {
   } finally {
     console.log = oldLog
   }
-  expect(output.trim()).toBe('{\n    \"Parameters\": []\n}')
+  expect(output.trim()).toBe("OK")
 })
 
 test("validate reports aws errors", async () => {
+  callback = () => {
+    throw new Error("Error: ValidationError")
+  }
   const flags = { render: "handlebars", env: "", profile: "" }
   const oldError = console.error
   const oldExit = process.exit
