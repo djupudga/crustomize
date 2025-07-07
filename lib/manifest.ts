@@ -14,6 +14,8 @@ export type CrustomizeManifest = {
   base: string
   overlays?: string[]
   params?: string
+  render?: string
+  profile?: string
   stack?: {
     name: string
     capabilities?: string[]

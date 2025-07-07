@@ -1,7 +1,7 @@
 export type Flags = {
   profile?: string
   output?: string
-  render: string
+  render?: string
   env?: string
   silent?: boolean
   lint?: boolean

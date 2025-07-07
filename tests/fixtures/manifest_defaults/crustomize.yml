@@ -1,0 +1,14 @@
+base: ../base
+render: ejs
+profile: testprof
+overlays:
+  - ./S3.yml
+values:
+  BucketName: mybucket
+  Versioned: true
+  ExpirationInDays: 123
+  Tags:
+    - Key: Name
+      Value: mybucket
+    - Key: Environment
+      Value: dev

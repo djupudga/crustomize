@@ -58,3 +58,22 @@ test("creates output directory if missing", async () => {
   fs.rmSync(outputPath, { recursive: true, force: true })
 })
 
+test("manifest values override flags", async () => {
+  const crustomizePath = "tests/fixtures/manifest_defaults"
+  const flags: any = {
+    render: "handlebars",
+    profile: "cli-prof",
+  }
+  let results = ""
+  const old = console.log
+  try {
+    console.log = (r) => { results = r }
+    await apply(crustomizePath, flags)
+  } finally {
+    console.log = old
+  }
+  expect(flags.render).toBe("ejs")
+  expect(flags.profile).toBe("testprof")
+  expect(results).toContain("ExpirationInDays: 123")
+})
+

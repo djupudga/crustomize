@@ -22,6 +22,17 @@ export const deleteChangeSet: ApplyFunction = async (crustomizePath, flags) => {
 
     const manifest = getManifest(crustomizePath)
 
+    // Manifest values override any provided flags
+    if (manifest.render) {
+      flags.render = manifest.render
+    } else if (!flags.render) {
+      flags.render = "handlebars"
+    }
+
+    if (manifest.profile) {
+      flags.profile = manifest.profile
+    }
+
     if (!manifest.stack) {
       console.error("'stack' is required in the manifest for this operation.")
       process.exit(1)

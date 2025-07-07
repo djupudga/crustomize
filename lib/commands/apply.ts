@@ -85,7 +85,18 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
   }
   try {
     const manifest = getManifest(crustomizePath)
-    
+
+    // Manifest values override any provided flags
+    if (manifest.render) {
+      flags.render = manifest.render
+    } else if (!flags.render) {
+      flags.render = "handlebars"
+    }
+
+    if (manifest.profile) {
+      flags.profile = manifest.profile
+    }
+
     // If the manifest defines params, then the --output parameter is required.
     if (manifest.params && !flags.output) {
       console.error(
