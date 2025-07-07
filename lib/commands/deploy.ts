@@ -9,7 +9,7 @@ import { cleanUpAwsFiles } from "../cleanup";
 
 export const deploy: ApplyFunction = async (crustomizePath, flags) => {
   let spinner: Ora | undefined
-  if (!flags.silent) {
+  if (!flags.ci) {
     spinner = ora("Deploying CloudFormation stack...").start()
   } else {
     console.log("Deploying CloudFormation stack...")
@@ -24,10 +24,7 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
     // Manifest values override any provided flags
     if (manifest.render) {
       flags.render = manifest.render
-    } else if (!flags.render) {
-      flags.render = "handlebars"
     }
-
     if (manifest.profile) {
       flags.profile = manifest.profile
     }

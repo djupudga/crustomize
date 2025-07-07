@@ -1,10 +1,11 @@
 export type Flags = {
-  profile?: string
-  output?: string
-  render?: string
+  config?: string
   env?: string
-  silent?: boolean
   lint?: boolean
+  output?: string
+  profile?: string
+  render?: string
+  ci?: boolean
 }
 
 export type ApplyFunction = (path: string, flags: Flags) => Promise<void>

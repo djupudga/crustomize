@@ -89,10 +89,7 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
     // Manifest values override any provided flags
     if (manifest.render) {
       flags.render = manifest.render
-    } else if (!flags.render) {
-      flags.render = "handlebars"
     }
-
     if (manifest.profile) {
       flags.profile = manifest.profile
     }
