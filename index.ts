@@ -1,6 +1,6 @@
 import meow from "meow"
 import { commands } from "./lib/commands/"
-import {version} from "./package.json"
+import { version } from "./package.json"
 
 const cli = meow(
   `
@@ -16,6 +16,7 @@ const cli = meow(
     create-change-set  Creates a CloudFormation change set
     execute-change-set Executes a CloudFormation change set
     delete-change-set  Deletes a CloudFormation change set
+    validate           Validates the generated template
   Parameters:
     <path> Path to overlay folder
   Options
