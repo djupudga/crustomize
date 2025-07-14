@@ -93,13 +93,7 @@ export function getParameter(
   query?: string,
   profile?: string,
 ): string {
-  const args = [
-    "ssm",
-    "get-parameter",
-    "--name",
-    name,
-    "--query",
-  ]
+  const args = ["ssm", "get-parameter", "--name", name, "--query"]
   if (query) args.push(query)
   else args.push("Parameter.Value")
 
@@ -107,6 +101,3 @@ export function getParameter(
 
   return runAwsCommand(args)
 }
-
-
-

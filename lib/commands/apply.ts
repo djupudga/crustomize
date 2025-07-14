@@ -4,12 +4,17 @@ import { handleError } from "../errors"
 import { yamlDump, yamlParse } from "yaml-cfn"
 import { processYaml } from "../process"
 import deepmerge from "deepmerge"
-import { lint, lintStdin } from "../lint"
+import { lint } from "../lint"
+import { lintStdin } from "../lintStdin"
 import type { ApplyFunction, Flags } from "./types.d"
 import { getManifest, type CrustomizeManifest } from "../manifest"
-import { S3Client, GetObjectCommand, ListObjectsV2Command} from "@aws-sdk/client-s3"
+import {
+  S3Client,
+  GetObjectCommand,
+  ListObjectsV2Command,
+} from "@aws-sdk/client-s3"
 import { jsonpatch } from "json-p3"
-
+import { cleanUpAwsFiles } from "../cleanup"
 
 type BaseFiles = Record<string, any>
 type OverlayFiles = Record<string, any>
@@ -65,8 +70,8 @@ async function getBaseFiles(
     return getS3Files(base, flags, manifest)
   } else {
     const basePath = path.resolve(crustomizePath, base)
-    const baseFileNames = fs.readdirSync(basePath).filter(ymlFilter) 
-    const baseFiles =  baseFileNames.reduce<BaseFiles>((acc, fileName) => {
+    const baseFileNames = fs.readdirSync(basePath).filter(ymlFilter)
+    const baseFiles = baseFileNames.reduce<BaseFiles>((acc, fileName) => {
       const filePath = `${basePath}/${fileName}`
       if (!fs.lstatSync(filePath).isFile()) return acc
 
@@ -107,7 +112,7 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
       manifest.base,
       crustomizePath,
       flags,
-      manifest
+      manifest,
     )
 
     // Load all overlay files
@@ -123,7 +128,7 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
       const fileName = overlayPath.split("/").pop() as string
       overlayFiles[fileName] = yamlParse(file) || {}
     })
-    
+
     // Merge all base files into a single object
     let merged = {}
     for (const baseFile of Object.values(baseFiles)) {
@@ -174,7 +179,7 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
         const paramsJson = yamlParse(paramsYaml)
         fs.writeFileSync(
           path.join(flags.output, "params.json"),
-          JSON.stringify(paramsJson, null, 2)
+          JSON.stringify(paramsJson, null, 2),
         )
       }
     }

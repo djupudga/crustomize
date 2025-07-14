@@ -118,5 +118,5 @@ export const helpers = {
    */
   valueOrDefault(value: any, defaultValue: any) {
     return value != null ? value : defaultValue
-  }
+  },
 }

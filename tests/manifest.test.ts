@@ -1,4 +1,4 @@
-import {test, expect} from "bun:test"
+import { test, expect } from "bun:test"
 import { getManifest } from "../lib/manifest"
 
 test("loads a good manifest", () => {
@@ -15,7 +15,7 @@ test("loads a good manifest", () => {
     values: {
       NetworkMode: "awsvpc",
       VpcStackName: "SomeName",
-      Foo: true
+      Foo: true,
     },
   })
 })

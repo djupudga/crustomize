@@ -39,7 +39,9 @@ test("validate reports aws errors", async () => {
   process.exit = ((code?: number) => {
     throw new Error(`exit ${code}`)
   }) as any
-  expect(validate("tests/fixtures/manifest_with_bad_base", flags)).rejects.toThrow()
+  expect(
+    validate("tests/fixtures/manifest_with_bad_base", flags),
+  ).rejects.toThrow()
   console.error = oldError
   process.exit = oldExit
   expect(errMsg).toContain("ValidationError")

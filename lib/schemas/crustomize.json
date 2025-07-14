@@ -22,10 +22,7 @@
           "uniqueItems": true,
           "items": {
             "type": "string",
-            "enum": [
-              "CAPABILITY_IAM",
-              "CAPABILITY_NAMED_IAM"
-            ]
+            "enum": ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM"]
           }
         },
         "tags": {
@@ -60,14 +57,7 @@
         "properties": {
           "op": {
             "type": "string",
-            "enum": [
-              "add",
-              "remove",
-              "replace",
-              "move",
-              "copy",
-              "test"
-            ]
+            "enum": ["add", "remove", "replace", "move", "copy", "test"]
           },
           "path": {
             "type": "string"

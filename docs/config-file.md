@@ -14,4 +14,3 @@ profile: my-profile
 Values in the config file are used as defaults. Flags passed on the command line
 override the config values. However, `render` and `profile` settings in
 `crustomize.yml` override both.
-

@@ -40,7 +40,6 @@ values:
   VpcStackName: SomeStack
 ```
 
-
 ## Using `apply`
 
 Generate a merged template to stdout:
@@ -50,6 +49,7 @@ crustomize apply variants/dev
 ```
 
 ### No `params.yml`
+
 When the manifest does not include a `params` entry, `--output` is optional and it will print output to standard out:
 
 ```bash
@@ -57,6 +57,7 @@ crustomize apply path/to/variant
 ```
 
 ### With `params.yml`
+
 If `params` is set, provide an output directory so `params.json` can be generated:
 
 ```bash
@@ -64,6 +65,7 @@ crustomize apply path/to/variant --output ./build
 ```
 
 ### Stack name in manifest
+
 Including `stack.name` allows using deployment related commands:
 
 ```bash
@@ -75,6 +77,7 @@ crustomize validate path/to/variant
 ```
 
 ### Environment variables
+
 You may pass environment variables directly:
 
 ```bash
@@ -82,6 +85,7 @@ FOO_BAR=bar crustomize apply path/to/variant
 ```
 
 ### Variables from `env.yml`
+
 To load a YAML file and merge the values into the `env` object accessible from templates:
 
 ```bash

@@ -1,14 +1,17 @@
 import fs from "fs"
-import { getManifest } from "../manifest";
-import type { ApplyFunction } from "./types";
-import { apply } from "./apply";
-import { runAwsCommand } from "../aws";
+import { getManifest } from "../manifest"
+import type { ApplyFunction } from "./types"
+import { apply } from "./apply"
+import { runAwsCommand } from "../aws"
 import ora, { type Ora } from "ora"
-import { handleError } from "../errors";
-import { hashFile } from "../file-hasher";
-import { cleanUpAwsFiles } from "../cleanup";
+import { handleError } from "../errors"
+import { hashFile } from "../file-hasher"
+import { cleanUpAwsFiles } from "../cleanup"
 
-export const executeChangeSet: ApplyFunction = async (crustomizePath, flags) => {
+export const executeChangeSet: ApplyFunction = async (
+  crustomizePath,
+  flags,
+) => {
   let spinner: Ora | undefined
   if (!flags.ci) {
     spinner = ora("Executing CloudFormation change set...").start()
@@ -36,8 +39,8 @@ export const executeChangeSet: ApplyFunction = async (crustomizePath, flags) => 
     }
 
     if (!flags.output) {
-      fs.mkdirSync('./.crustomize_deploy', { recursive: true })
-      flags.output = './.crustomize_deploy'
+      fs.mkdirSync("./.crustomize_deploy", { recursive: true })
+      flags.output = "./.crustomize_deploy"
     }
 
     await apply(crustomizePath, flags)
@@ -60,7 +63,7 @@ export const executeChangeSet: ApplyFunction = async (crustomizePath, flags) => 
     runAwsCommand(args)
 
     console.log(`Change set ${manifest.stack.name}-cs-${hash} executed`)
-    
+
     spinner?.stop()
   } catch (e) {
     spinner?.stop()

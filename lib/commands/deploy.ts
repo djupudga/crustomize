@@ -1,11 +1,11 @@
 import fs from "fs"
-import { getManifest } from "../manifest";
-import type { ApplyFunction } from "./types";
-import { apply } from "./apply";
-import { runAwsCommand } from "../aws";
+import { getManifest } from "../manifest"
+import type { ApplyFunction } from "./types"
+import { apply } from "./apply"
+import { runAwsCommand } from "../aws"
 import ora, { type Ora } from "ora"
-import { handleError } from "../errors";
-import { cleanUpAwsFiles } from "../cleanup";
+import { handleError } from "../errors"
+import { cleanUpAwsFiles } from "../cleanup"
 
 export const deploy: ApplyFunction = async (crustomizePath, flags) => {
   let spinner: Ora | undefined
@@ -35,8 +35,8 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
     }
 
     if (!flags.output) {
-      fs.mkdirSync('./.crustomize_deploy', { recursive: true })
-      flags.output = './.crustomize_deploy'
+      fs.mkdirSync("./.crustomize_deploy", { recursive: true })
+      flags.output = "./.crustomize_deploy"
     }
 
     await apply(crustomizePath, flags)
@@ -53,10 +53,7 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
       args.push("--profile", flags.profile)
     }
     if (manifest.stack.capabilities) {
-      args.push(
-        "--capabilities",
-        manifest.stack.capabilities.join(" "),
-      )
+      args.push("--capabilities", manifest.stack.capabilities.join(" "))
     }
     if (manifest.stack.tags) {
       args.push(
@@ -74,7 +71,7 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
     spinner?.stop()
 
     console.log(`Deployed ${manifest.stack.name}`)
-  } catch(e) {
+  } catch (e) {
     spinner?.stop()
     if (e instanceof Error) {
       if (e.message.includes("No changes to deploy")) {

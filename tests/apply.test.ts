@@ -3,7 +3,7 @@ import { apply } from "../lib/commands/apply"
 import fs from "fs"
 import path from "path"
 
-test("crustomize a path", async() => {
+test("crustomize a path", async () => {
   const crustomizePath = "tests/fixtures/base_variant"
   const flags = {
     render: "handlebars",
@@ -13,7 +13,9 @@ test("crustomize a path", async() => {
   let results = ""
   const old = console.log
   try {
-    console.log = (r) => { results = r }
+    console.log = (r) => {
+      results = r
+    }
     await apply(crustomizePath, flags)
   } finally {
     console.log = old
@@ -67,7 +69,9 @@ test("manifest values override flags", async () => {
   let results = ""
   const old = console.log
   try {
-    console.log = (r) => { results = r }
+    console.log = (r) => {
+      results = r
+    }
     await apply(crustomizePath, flags)
   } finally {
     console.log = old
@@ -76,4 +80,3 @@ test("manifest values override flags", async () => {
   expect(flags.profile).toBe("testprof")
   expect(results).toContain("ExpirationInDays: 123")
 })
-

@@ -22,8 +22,9 @@ export function applyConfig(flags: Flags): Flags {
       ] as (keyof Flags)[]
       for (const [key, value] of Object.entries(cfg)) {
         if (!validKeys.includes(key as keyof Flags)) {
-          throw new Error(`Error reading .crustomizerc - unknown config key: ${key}`)
-
+          throw new Error(
+            `Error reading .crustomizerc - unknown config key: ${key}`,
+          )
         }
         copy[key as keyof Flags] = value
       }

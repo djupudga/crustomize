@@ -5,9 +5,9 @@ import { AjvValidationError } from "./errors"
 import { yamlParse } from "yaml-cfn"
 
 type JsonPatch = {
-  op: string,
-  path: string,
-  value?: any,
+  op: string
+  path: string
+  value?: any
 }
 
 export type CrustomizeManifest = {
@@ -20,8 +20,8 @@ export type CrustomizeManifest = {
     name: string
     capabilities?: string[]
     tags?: Record<string, string>
-  },
-  values: any,
+  }
+  values: any
   patches?: JsonPatch[]
 }
 
