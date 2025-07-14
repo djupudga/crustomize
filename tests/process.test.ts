@@ -107,7 +107,7 @@ base64: <%= toBase64(values.bar) %>`
   const result = processYaml(yamlString, manifest, flags, "")
   // Verify
   expect(result).toBe(
-    `\na: a\nb: b\nbar: \"bar\"\nbaz: alo\nfoo:\n  bar\nbase64: YmFy`,
+    `\na: a\nb: b\nbar: "bar"\nbaz: alo\nfoo:\n  bar\nbase64: YmFy`,
   )
 })
 
@@ -136,6 +136,6 @@ base64: {{toBase64 values.bar}}`
   const result = processYaml(yamlString, manifest, flags, "")
   // Verify
   expect(result).toBe(
-    `\na: a\nb: b\nbar: \"bar\"\nbaz: alo\nfoo:\n  bar\nbase64: YmFy`,
+    `\na: a\nb: b\nbar: "bar"\nbaz: alo\nfoo:\n  bar\nbase64: YmFy`,
   )
 })

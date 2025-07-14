@@ -17,7 +17,7 @@ function stackExists(stackName: string, profile?: string): boolean {
   try {
     runAwsCommand(args)
     return true
-  } catch (e) {
+  } catch {
     return false
   }
 }

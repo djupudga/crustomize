@@ -4,8 +4,7 @@ import { handleError } from "../errors"
 import { yamlDump, yamlParse } from "yaml-cfn"
 import { processYaml } from "../process"
 import deepmerge from "deepmerge"
-import { lint } from "../lint"
-import { lintStdin } from "../lintStdin"
+import { lint, lintStdin } from "../lint"
 import type { ApplyFunction, Flags } from "./types.d"
 import { getManifest, type CrustomizeManifest } from "../manifest"
 import {
@@ -14,7 +13,6 @@ import {
   ListObjectsV2Command,
 } from "@aws-sdk/client-s3"
 import { jsonpatch } from "json-p3"
-import { cleanUpAwsFiles } from "../cleanup"
 
 type BaseFiles = Record<string, any>
 type OverlayFiles = Record<string, any>

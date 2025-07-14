@@ -3,18 +3,21 @@
   "module": "index.ts",
   "type": "module",
   "license": "MIT",
-  "version": "0.0.5",
+  "version": "0.0.10",
   "bin": {
     "crustomize": "bin/crustomize"
   },
   "scripts": {
     "test": "bun test",
-    "lint": "bun run eslint .",
-    "format": "bun run prettier . --write"
+    "lint": "bun run oxlint .",
+    "typecheck": "bun run tsc --noEmit",
+    "format": "bun run prettier . --write",
+    "all": "bun run typecheck && bun run lint && bun run format && bun run test"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/json-merge-patch": "^1.0.0",
+    "oxlint": "^1.6.0",
     "prettier": "^3.5.1"
   },
   "peerDependencies": {

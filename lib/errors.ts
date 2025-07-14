@@ -7,7 +7,6 @@ export class CrustomizeError extends Error {
   ) {
     super(message)
     this.name = "CrustomizeError"
-    this.code = code
   }
 }
 
