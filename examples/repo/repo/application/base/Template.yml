@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Resources:
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      RequiresCompatibilities:
+        - "FARGATE"
+      ExecutionRoleArn: "arn:aws:iam::882288228822:role/ecsTaskExecutionRole"
+      Cpu: 256
+      Memory: 512
+      ContainerDefinitions:
+        - Name: {{values.name}}
+          Image: {{values.def.image}}
+          Replicas: {{values.def.replicas}}
+          MemoryReservation: 256
+          Memory: 512
+          PortMappings:
+            - ContainerPort: 8080
+              Protocol: tcp
+          Environment:
+            {{ indent (toYaml values.def.environment) 10 }}

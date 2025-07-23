@@ -2,14 +2,13 @@ import ejs from "ejs"
 import fs from "fs"
 import handlebars from "handlebars"
 import type { Flags } from "./commands/types.d"
-import type { CrustomizeManifest } from "./manifest"
 import { helpers } from "./helpers"
 import { yamlParse } from "yaml-cfn"
 
 // Data should contain all types in helpers
 type Data = {
   env: Record<string, string>
-  values: Record<string, string>
+  values: Record<string, any>
 } & {
   indent: typeof helpers.indent
   toYaml: (obj: any) => string
@@ -25,11 +24,11 @@ type Data = {
 
 export function processYaml(
   yamlString: string,
-  manifest: CrustomizeManifest,
+  values: Record<string, any> | undefined,
   flags: Flags,
   wd: string,
 ) {
-  const data = { values: manifest.values || {} } as Data
+  const data = { values: values || {} } as Data
   data.env = Object.assign({}, process.env) as Record<string, string>
   if (flags.env) {
     const envFile = flags.env

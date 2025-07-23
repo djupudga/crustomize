@@ -19,6 +19,8 @@ export function applyConfig(flags: Flags): Flags {
         "profile",
         "render",
         "silent",
+        "ci",
+        "repo",
       ] as (keyof Flags)[]
       for (const [key, value] of Object.entries(cfg)) {
         if (!validKeys.includes(key as keyof Flags)) {

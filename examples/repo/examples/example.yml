@@ -1,0 +1,7 @@
+type: application/v1
+name: Example
+def:
+  image: foo:bar
+  environment:
+    foo: bar
+  replicas: 2

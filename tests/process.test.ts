@@ -21,7 +21,7 @@ test("ejs", () => {
     profile: "",
   }
   // Exercise
-  const result = processYaml(yamlString, manifest, flags, "")
+  const result = processYaml(yamlString, manifest.values, flags, "")
   // Verify
   expect(result).toBe(`\n  foo: foo\n  bar: bar\n  baz: baz`)
 })
@@ -45,7 +45,7 @@ test("handlebars", () => {
     profile: "",
   }
   // Exercise
-  const result = processYaml(yamlString, manifest, flags, "")
+  const result = processYaml(yamlString, manifest.values, flags, "")
   // Verify
   expect(result).toBe(`\n  foo: foo\n  bar: bar\n  baz: baz`)
 })
@@ -61,7 +61,7 @@ test("env", () => {
   }
   process.env["foo"] = "bar"
   // Exercise
-  const result = processYaml(yamlString, manifest, flags, "")
+  const result = processYaml(yamlString, manifest.values, flags, "")
   // Verify
   expect(result).toBe(`foo: bar`)
 })
@@ -77,7 +77,7 @@ test("env with env file", () => {
   }
 
   // Exercise
-  const result = processYaml(yamlString, manifest, flags, "")
+  const result = processYaml(yamlString, manifest.values, flags, "")
   // Verify
   expect(result).toBe(`foo: bar`)
 })
@@ -104,7 +104,7 @@ base64: <%= toBase64(values.bar) %>`
     profile: "",
   }
   // Exercise
-  const result = processYaml(yamlString, manifest, flags, "")
+  const result = processYaml(yamlString, manifest.values, flags, "")
   // Verify
   expect(result).toBe(
     `\na: a\nb: b\nbar: "bar"\nbaz: alo\nfoo:\n  bar\nbase64: YmFy`,
@@ -133,7 +133,7 @@ base64: {{toBase64 values.bar}}`
     profile: "",
   }
   // Exercise
-  const result = processYaml(yamlString, manifest, flags, "")
+  const result = processYaml(yamlString, manifest.values, flags, "")
   // Verify
   expect(result).toBe(
     `\na: a\nb: b\nbar: "bar"\nbaz: alo\nfoo:\n  bar\nbase64: YmFy`,

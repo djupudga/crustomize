@@ -13,6 +13,7 @@ const cli = meow(
 
   Commands:
     apply              Applies overlays to a base file
+    generate           Generates a CloudFormation template 
     deploy             Deploys a CloudFormation stack
     create-change-set  Creates a CloudFormation change set
     execute-change-set Executes a CloudFormation change set
@@ -24,6 +25,7 @@ const cli = meow(
     --render, -r    Template engine, default is "handlebars"
     --output, -o    Output directory
     --profile, -p   AWS CLI profile, default is "default"
+    --repo, -R      Used with 'generate' command to specify the repository
     --config, -c    Config file with flag defaults
     --lint, -l      Lint the output file (requires cfn-lint)
     --env, -e       Environment file
@@ -60,6 +62,11 @@ const cli = meow(
         type: "string",
         isRequired: false,
         aliases: ["r"],
+      },
+      repo: {
+        type: "string",
+        isRequired: false,
+        aliases: ["R"],
       },
       config: {
         type: "string",
