@@ -9,6 +9,7 @@ crustomize [command] <path> [options]
 ## Commands
 
 - `apply` – Applies overlays to a base file.
+- `generate` – Generates a manifest from a template repo.
 - `deploy` – Deploys a CloudFormation stack.
 - `create-change-set` – Creates a CloudFormation change set.
 - `execute-change-set` – Executes a CloudFormation change set.
