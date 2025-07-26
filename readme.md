@@ -23,8 +23,7 @@ parameters passed to the AWS CLI or bash scripts.
 Also, you won't really need to use parameters in your templates
 because the overlays will basically do this for you.
 
-For a more detailed guide and additional documentation see
-[docs/index.md](docs/index.md).
+For a more detailed guide and additional documentation see [docs/index.md](docs/index.md). The documentation is also published as a GitHub Pages site.
 You may store default CLI flags in a `.crustomizerc` file in your project
 directory. See [docs/config-file.md](docs/config-file.md) for details.
 

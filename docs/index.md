@@ -1,3 +1,8 @@
+---
+layout: default
+title: Crustomize
+---
+
 # Crustomize Documentation
 
 Crustomize lets you build reproducible AWS CloudFormation deployments by merging base templates with overlays.
