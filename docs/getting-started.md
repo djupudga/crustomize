@@ -4,9 +4,12 @@ Crustomize is a small CLI that merges and deploys CloudFormation templates.
 
 ### Prerequisites
 
-- [AWS CLI](https://aws.amazon.com/cli/)
-- [cfn-lint](https://github.com/aws-cloudformation/cfn-lint) if you plan to use the `--lint` flag
-- [bun](https://bun.sh) &mdash; only required when building from source
+Make sure you have [AWS CLI](https://aws.amazon.com/cli/) installed.
+
+We also recommend to install [cfn-lint](https://github.com/aws-cloudformation/cfn-lint)
+for linting the generated templates.
+
+[bun](https://bun.sh) is only required when building from source.
 
 ### Installation
 
@@ -21,8 +24,14 @@ crustomize --help
 
 If you prefer to build the binary yourself:
 
-1. Install dependencies with `bun install`.
-2. Build using `make bundle`.
-3. Copy the executable from `dist/` to your `$PATH`.
+```shell
+git clone git@github.com:djupudga/crustomize.git
+cd crustomize
+bun install
+make bundle
+```
 
-See the examples under `examples/` for sample templates.
+Then copy the relevant executable from `dist/` to your `$PATH`, or, if you
+are on a linux machine you should be able to run `make install`
+
+Test the installation by running `crustomize --help`.

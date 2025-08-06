@@ -1,6 +1,64 @@
 # Project Structure
 
-Crustomize expects a directory containing a **crustomize.yml** manifest. The manifest defines the base templates, overlay files, optional parameters, stack information and optional settings like the render engine and AWS profile. These settings override the corresponding command line flags. A common layout is to keep reusable base templates under a `base/` folder and variants that inherit from the base under `variants/`.
+Crustomize expects a directory containing a **crustomize.yml** manifest. 
+The manifest defines the base templates, overlay files, optional parameters, 
+stack information and optional settings like the render engine and AWS 
+profile. These settings override the corresponding command line flags. 
+
+A common layout is to keep reusable base templates under a `base/` folder 
+and variants that inherit from the base under `variants/` (or `overlays/`).
+
+```
+app/
+├── base/
+│   └── Template.yml
+├── variants/
+│   ├── dev/
+│   │   ├── crustomize.yml
+│   │   └── Template.yml
+│   └── prod/
+│       ├── crustomize.yml
+│       └── Template.yml
+└── env.yml
+```
+
+The variants thus define only the specifics for that environment, such
+as a docker image tag or different values for environment variables.
+In the layout above, the variants provide overrides for the `Template.yml`
+resources.
+
+The `crustomize.yml` file inside each variant references the base directory 
+and overlay files relative to itself. 
+
+```yaml
+base: ../base
+overlays:
+  - ./Template.yml
+```
+
+It is also possible to separate resources into multple files, such as:
+
+```
+app/
+├── base/
+│   ├── ec2.yml
+│   └── roles.yml
+└── variants/
+    └── dev/
+        ├── crustomize.yml
+        ├── ec2.yml
+        └── roles.yml
+```
+
+Be aware that when resources are merged by crustomize it doesn't care
+which file the resources are from, so if you have duplicates in two
+different files, the resulting template will only have one of these.
+
+## Params files
+
+If you need CloudFormation parameters, you put these in an overlay file
+and define it in the `crustomize.yml` file under the `params:` property.
+Below is an example project structure with params file and an `env.yml` file.
 
 ```
 my-app/
@@ -18,78 +76,15 @@ my-app/
 └── env.yml
 ```
 
-The `crustomize.yml` file inside each variant references the base directory and overlay files relative to itself. If a `params.yml` file is present it is converted to JSON when using the `apply` or deployment commands.
+When processed the params `YAML` file is converted to a `params.json` file
+and saved to the output folder.
 
-## Example `crustomize.yml`
+The `env.yml` in the project structure's root is used to define 
+environment variables that are common to all variants. These
+values are referenced in a template using `env.VARIABLE_NAME`.
+The `env.yml` structure is something like this:
 
 ```yaml
-base: ../base
-render: handlebars
-profile: my-profile
-overlays:
-  - ./Template.yml
-stack:
-  name: my-stack
-  capabilities:
-    - CAPABILITY_IAM
-  tags:
-    Environment: dev
-params: ./params.yml
-values:
-  NetworkMode: awsvpc
-  VpcStackName: SomeStack
+account: 1234567
+foo: bar
 ```
-
-## Using `apply`
-
-Generate a merged template to stdout:
-
-```bash
-crustomize apply variants/dev
-```
-
-### No `params.yml`
-
-When the manifest does not include a `params` entry, `--output` is optional and it will print output to standard out:
-
-```bash
-crustomize apply path/to/variant
-```
-
-### With `params.yml`
-
-If `params` is set, provide an output directory so `params.json` can be generated:
-
-```bash
-crustomize apply path/to/variant --output ./build
-```
-
-### Stack name in manifest
-
-Including `stack.name` allows using deployment related commands:
-
-```bash
-crustomize deploy path/to/variant
-crustomize create-change-set path/to/variant
-crustomize execute-change-set path/to/variant
-crustomize delete-change-set path/to/variant
-crustomize validate path/to/variant
-```
-
-### Environment variables
-
-You may pass environment variables directly:
-
-```bash
-FOO_BAR=bar crustomize apply path/to/variant
-```
-
-### Variables from `env.yml`
-
-To load a YAML file and merge the values into the `env` object accessible from templates:
-
-```bash
-crustomize apply path/to/variant --env ./env.yml
-```
-
-`env.yml` is helpful for defining static values that are reused across multiple variants.

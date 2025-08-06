@@ -8,6 +8,13 @@ specified, they override the corresponding command line flags.
 base: ../base
 render: ejs
 profile: my-aws-profile
+stack:
+  name: my-stack
+  capabilities:
+    - CAPABILITY_IAM
+  tags:
+    Environment: dev
+params: ./params.yml
 overlays:
   - ./Template.yml
 values:
