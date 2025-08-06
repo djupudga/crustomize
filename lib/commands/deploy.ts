@@ -64,7 +64,7 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
       )
     }
     if (manifest.params) {
-      args.push("--parameter-file", `${flags.output}/params.json`)
+      args.push("--parameters", `file://${flags.output}/params.json`)
     }
 
     runAwsCommand(args)

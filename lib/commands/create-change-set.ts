@@ -81,7 +81,7 @@ export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
       )
     }
     if (manifest.params) {
-      args.push("--parameter-file", `${flags.output}/params.json`)
+      args.push("--parameters", `file://${flags.output}/params.json`)
     }
     if (stackExists(manifest.stack.name, flags.profile)) {
       args.push("--change-set-type", "UPDATE")
