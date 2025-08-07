@@ -4,6 +4,8 @@ import handlebars from "handlebars"
 import type { Flags } from "./commands/types.d"
 import { helpers } from "./helpers"
 import { yamlParse } from "yaml-cfn"
+import path from "path"
+import { run } from "./run"
 
 // Data should contain all types in helpers
 type Data = {
@@ -50,6 +52,19 @@ export function processYaml(
     data.lookupCfOutput = helpers.lookupCfOutput(flags.profile)
     data.getParameter = helpers.getParameter(flags.profile)
     data.valueOrDefault = helpers.valueOrDefault
+    if (process.env["CRUSTOMIZE_HELPERS"]) {
+      const customHelpersPath = path.resolve(process.env["CRUSTOMIZE_HELPERS"])
+      const customHelpers = require(customHelpersPath)
+      const args = {
+        wd,
+        profile: flags.profile,
+        run
+      }
+      for (const key in customHelpers) {
+        // @ts-ignore
+        data[key] = customHelpers[key](args)
+      }
+    }
 
     return ejs.render(yamlString, data, {
       escape: (s: string) => (s == null ? "" : s),
@@ -73,6 +88,20 @@ export function processYaml(
       "getParameter",
       helpers.getParameter(flags.profile),
     )
+    if (process.env["CRUSTOMIZE_HELPERS"]) {
+      const customHelpersPath = path.resolve(process.env["CRUSTOMIZE_HELPERS"])
+      const customHelpers = require(customHelpersPath)
+      const args = {
+        wd,
+        profile: flags.profile,
+        run
+      }
+      for (const key in customHelpers) {
+        // @ts-ignore
+        handlebars.registerHelper(key, customHelpers[key](args))
+      }
+    }
+
     const template = handlebars.compile(yamlString, { noEscape: true })
     return template(data)
   } else {
