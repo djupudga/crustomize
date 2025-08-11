@@ -6,6 +6,7 @@ helper is a function that returns a function. The returned function is
 the actual helper, while the enclosing one receives context parameters.
 
 Example helper signature:
+
 ```JavaScript
 export function ls({wd, profile, run}) {
   const ls = run.bind(null, "ls")

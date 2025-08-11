@@ -1,11 +1,11 @@
 # Project Structure
 
-Crustomize expects a directory containing a **crustomize.yml** manifest. 
-The manifest defines the base templates, overlay files, optional parameters, 
-stack information and optional settings like the render engine and AWS 
-profile. These settings override the corresponding command line flags. 
+Crustomize expects a directory containing a **crustomize.yml** manifest.
+The manifest defines the base templates, overlay files, optional parameters,
+stack information and optional settings like the render engine and AWS
+profile. These settings override the corresponding command line flags.
 
-A common layout is to keep reusable base templates under a `base/` folder 
+A common layout is to keep reusable base templates under a `base/` folder
 and variants that inherit from the base under `variants/` (or `overlays/`).
 
 ```
@@ -27,8 +27,8 @@ as a docker image tag or different values for environment variables.
 In the layout above, the variants provide overrides for the `Template.yml`
 resources.
 
-The `crustomize.yml` file inside each variant references the base directory 
-and overlay files relative to itself. 
+The `crustomize.yml` file inside each variant references the base directory
+and overlay files relative to itself.
 
 ```yaml
 base: ../base
@@ -79,7 +79,7 @@ my-app/
 When processed the params `YAML` file is converted to a `params.json` file
 and saved to the output folder.
 
-The `env.yml` in the project structure's root is used to define 
+The `env.yml` in the project structure's root is used to define
 environment variables that are common to all variants. These
 values are referenced in a template using `env.VARIABLE_NAME`.
 The `env.yml` structure is something like this:

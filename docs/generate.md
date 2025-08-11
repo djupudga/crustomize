@@ -18,4 +18,3 @@ crustomize generate examples/repo/examples/example.yml \
 ```
 
 This command generates a temporary `crustomize.yml` from the template, applies it and writes the resulting CloudFormation template to `./build`.
-

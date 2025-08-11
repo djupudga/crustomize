@@ -58,7 +58,7 @@ export function processYaml(
       const args = {
         wd,
         profile: flags.profile,
-        run
+        run,
       }
       for (const key in customHelpers) {
         // @ts-ignore
@@ -94,7 +94,7 @@ export function processYaml(
       const args = {
         wd,
         profile: flags.profile,
-        run
+        run,
       }
       for (const key in customHelpers) {
         // @ts-ignore

@@ -26,8 +26,6 @@ export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
   let spinner: Ora | undefined
   if (!flags.ci) {
     spinner = ora("Creating CloudFormation change set...").start()
-  } else {
-    console.log("Creating CloudFormation change set...")
   }
   try {
     if (crustomizePath.endsWith("/")) {

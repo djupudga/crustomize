@@ -22,7 +22,11 @@
           "uniqueItems": true,
           "items": {
             "type": "string",
-            "enum": ["CAPABILITY_IAM", "CAPABILITY_NAMED_IAM", "CAPABILITY_AUTO_EXPAND"]
+            "enum": [
+              "CAPABILITY_IAM",
+              "CAPABILITY_NAMED_IAM",
+              "CAPABILITY_AUTO_EXPAND"
+            ]
           }
         },
         "tags": {
