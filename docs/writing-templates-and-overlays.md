@@ -161,11 +161,13 @@ values:
 Modify the `test/ECSTaskExecutionRole.yml` like this:
 
 ```yml
+{% raw %}
 Resources:
   ECSTaskExecutionRole:
     Type: AWS::IAM::Role
     Properties:
       Description: This is a {{values.Stage}} execution role
+{% endraw %}
 ```
 
 When you run `crustomize apply crustomize/overlays/test` the `{{values.Stage}}`
