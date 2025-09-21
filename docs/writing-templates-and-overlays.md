@@ -111,7 +111,8 @@ in that regard. In this example we'll use Handlebars.
 
 Modify the `ECSCluster` section in the base template so it looks like this:
 
-```
+```yml
+{% raw %}
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
@@ -121,6 +122,7 @@ Modify the `ECSCluster` section in the base template so it looks like this:
       ClusterSettings:
         - Name: containerInsightsTest
           Value: enabled
+{% endraw %}
 ```
 
 Add a Description value in `test/crustomize.yml` like this:
