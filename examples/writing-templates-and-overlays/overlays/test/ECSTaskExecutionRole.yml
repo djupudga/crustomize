@@ -1,0 +1,5 @@
+Resources:
+  ECSTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Description: This is a {{values.Stage}} execution role

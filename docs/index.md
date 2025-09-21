@@ -49,7 +49,7 @@ setup.
 
 - [Getting started](getting-started.md)
 - [Structuring your project](project-structure.md)
-- Writing templates and overlays
+- [Writing templates and overlays](writing-templates-and-overlays.md)
 - Deploying to AWS
 - [Command line reference](commands.md)
 - References

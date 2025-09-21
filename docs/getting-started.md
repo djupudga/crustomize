@@ -1,6 +1,6 @@
 # Getting Started
 
-Crustomize is a small CLI that merges and deploys CloudFormation templates.
+Crustomize is a CLI that merges and, if needed, deploys CloudFormation templates.
 
 ### Prerequisites
 
@@ -32,6 +32,6 @@ make bundle
 ```
 
 Then copy the relevant executable from `dist/` to your `$PATH`, or, if you
-are on a linux machine you should be able to run `make install`
+are on an Intel/AMD linux machine you should be able to run `make install`
 
 Test the installation by running `crustomize --help`.

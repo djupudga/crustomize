@@ -1,0 +1,10 @@
+base: ../../base
+overlays:
+  - ECSTaskExecutionRole.yml
+patches:
+  - op: replace
+    path: "/Resources/ECSCluster/Properties/ClusterSettings/0/Name"
+    value: containerInsightsTest
+values:
+  Description: Test cluster
+  Stage: test
