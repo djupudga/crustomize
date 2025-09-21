@@ -1,6 +1,6 @@
 # crustomize
 
-![Crustomize logo](./crustomize_logo.png)
+![Crustomize logo](./docs/crustomize_logo.png)
 
 A Kustomize like CLI but for AWS CloudFormation templates.
 
