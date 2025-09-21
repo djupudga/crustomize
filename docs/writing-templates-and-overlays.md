@@ -57,7 +57,7 @@ overlays:
 Verify by running `crustomize apply crustomize/overlays/test`. The outputted
 template should contain the added `Description` property.
 
-Create a prod overlay by creating a `crustomize/overlays/prod` folder. 
+Create a prod overlay by creating a `crustomize/overlays/prod` folder.
 Copy the `test/crustomize.yml` file to that folder along with the
 `ECSTaskExecutionRole.yml` overlay.
 
@@ -105,13 +105,13 @@ IETF specifications.
 ## Step 4: Template rendering
 
 You can use either EJS or Handlebars as a template rendering engine.
-Handlebars offers a more strict method of rendering by limiting 
+Handlebars offers a more strict method of rendering by limiting
 what sort of in-process commands can be used. EJS is more flexible
 in that regard. In this example we'll use Handlebars.
 
 Modify the `ECSCluster` section in the base template so it looks like this:
 
-```yml
+```
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
