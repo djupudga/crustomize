@@ -1,4 +1,7 @@
 # crustomize
+
+![Crustomize logo](./crustomize_logo.png)
+
 A Kustomize like CLI but for AWS CloudFormation templates.
 
 Though the tool is standalone, it requires a
@@ -58,7 +61,7 @@ below you may find an example of how you could go about it.
 
 ## Installation
 
-Download the latest release or clone the repository. 
+Download the latest release or clone the repository.
 
 You need to install 'bun' if you build from source.
 https://bun.sh
