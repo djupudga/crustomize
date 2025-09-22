@@ -50,7 +50,7 @@ setup.
 - [Getting started](getting-started.md)
 - [Structuring your project](project-structure.md)
 - [Writing templates and overlays](writing-templates-and-overlays.md)
-- Deploying to AWS
+- [Deploying to AWS](deploying-to-aws.md)
 - [Command line reference](commands.md)
 - References
   - [crustomize.yml file](crustomize-yml.md)
