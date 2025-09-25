@@ -1,4 +1,4 @@
-# The generate command
+# Custom manifests
 
 While Crustomize mimics **kustomize** with overlays and **Helm Charts**
 with its template rendering support.

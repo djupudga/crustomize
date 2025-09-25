@@ -51,12 +51,12 @@ setup.
 - [Structuring your project](project-structure.md)
 - [Writing templates and overlays](writing-templates-and-overlays.md)
 - [Deploying to AWS](deploying-to-aws.md)
-- [Command line reference](commands.md)
+- [Custom manifests](generate.md)
 - References
+  - [Command line reference](commands.md)
   - [crustomize.yml file](crustomize-yml.md)
   - [.crustomizerc config](config-file.md)
   - [Helper functions](helpers.md)
-  - [generate command](generate.md)
 
 ## Transparenty note
 This is a Work in Progress and very alpha at the moment. For example, all
