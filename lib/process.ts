@@ -58,7 +58,8 @@ function loadCustomHelpers(wd: string, data: Data, flags: Flags, renderEngine: "
     return
   }
 
-  const helpers = helpersPaths.split(":")
+  // Split and make unique
+  const helpers = Array.from(new Set(helpersPaths.split(":")))
 
   for (const helpersPath of helpers) {
     const paths = solvePaths(helpersPath)
