@@ -1,16 +1,19 @@
 # Helper Functions
 
-Templates rendered with Handlebars gain a set of extra helpers on top of the built in ones provided by [Handlebars](https://handlebarsjs.com/).
+Templates rendered with [Handlebars](https://handlebarsjs.com/) or
+[EJS](https://ejs.co/) gain a set of extra helpers on top of any
+that are built into the respective Template Rendering Engine.
+
 
 | Helper           | Description                                                                                                                                 | Example                                     |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `indent`         | Indents a string by a number of spaces. Useful when reading other files and merging them into a YAML template so indentation stays correct. | `{{indent (getFile "policy.json") 4}}`      |
-| `toYaml`         | Converts an object to YAML.                                                                                                                 | `{{toYaml values}}`                         |
-| `quote`          | Wraps a value in double quotes.                                                                                                             | `{{quote env.REGION}}`                      |
-| `trunc`          | Truncates a string to a maximum length.                                                                                                     | `{{trunc stackName 12}}`                    |
-| `toBase64`       | Encodes a string as base64.                                                                                                                 | `{{toBase64 "foo"}}`                        |
-| `getFile`        | Reads a file relative to the manifest and returns its contents.                                                                             | `{{getFile "userdata.sh"}}`                 |
-| `fileToBase64`   | Reads a file and returns its base64 encoded contents.                                                                                       | `{{fileToBase64 "script.sh"}}`              |
-| `lookupCfOutput` | Retrieves an output from an existing CloudFormation stack.                                                                                  | `{{lookupCfOutput "network" "VpcId"}}`      |
-| `getParameter`   | Fetches a parameter from AWS Systems Manager Parameter Store.                                                                               | `{{getParameter "/my/param"}}`              |
-| `valueOrDefault` | Returns a value or a provided default.                                                                                                      | `{{valueOrDefault env.IMAGE_TAG "latest"}}` |
+| `indent`         | Indents a string by a number of spaces. Useful when reading other files and merging them into a YAML template so indentation stays correct. | <!-- {% raw %} -->`{{indent (getFile "policy.json") 4}}`<!-- {% endraw %} --> |
+| `toYaml`         | Converts an object to YAML.                                                                                                                 | <!-- {% raw %} -->`{{toYaml values}}`<!-- {% endraw %} --> |
+| `quote`          | Wraps a value in double quotes.                                                                                                             | <!-- {% raw %} -->`{{quote env.REGION}}`<!-- {% endraw %} --> |
+| `trunc`          | Truncates a string to a maximum length.                                                                                                     | <!-- {% raw %} -->`{{trunc stackName 12}}`<!-- {% endraw %} --> |
+| `toBase64`       | Encodes a string as base64.                                                                                                                 | <!-- {% raw %} -->`{{toBase64 "foo"}}`<!-- {% endraw %} --> |
+| `getFile`        | Reads a file relative to the manifest and returns its contents.                                                                             | <!-- {% raw %} -->`{{getFile "userdata.sh"}}`<!-- {% endraw %} --> |
+| `fileToBase64`   | Reads a file and returns its base64 encoded contents.                                                                                       | <!-- {% raw %} -->`{{fileToBase64 "script.sh"}}`<!-- {% endraw %} --> |
+| `lookupCfOutput` | Retrieves an output from an existing CloudFormation stack.                                                                                  | <!-- {% raw %} -->`{{lookupCfOutput "network" "VpcId"}}`<!-- {% endraw %} -->      |
+| `getParameter`   | Fetches a parameter from AWS Systems Manager Parameter Store.                                                                               | <!-- {% raw %} -->`{{getParameter "/my/param"}}`<!-- {% endraw %} -->              |
+| `valueOrDefault` | Returns a value or a provided default.                                                                                                      | <!-- {% raw %} -->`{{valueOrDefault env.IMAGE_TAG "latest"}}`<!-- {% endraw %} --> |
