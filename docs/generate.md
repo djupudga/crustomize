@@ -1,9 +1,7 @@
 # Custom manifests
 
 While Crustomize mimics **kustomize** with overlays and **Helm Charts**
-with its template rendering support.
-
-The `generate` command is a bit different.
+with its template rendering support, the `generate` command is a bit different.
 
 It enables you to define a DSL like manifest format that results in
 a generated AWS CloudFormation template. For example, you could have
