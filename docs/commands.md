@@ -21,6 +21,7 @@ Crustomize supports the following options:
     --config, -c    Config file with flag defaults
     --lint, -l      Lint the output file (requires cfn-lint)
     --env, -e       Environment file
+    --helpers, -H   Path(s) to colon separated custom helpers file or folder
     --help, -h      Show help
     --version, -v   Show version
     --ci, -i        CI/CD mode
@@ -147,4 +148,6 @@ instance in AWS RDS.
 **Examples:**
 ```bash
 crustomize generate path/to/manifest.yml -r path/to/repo/folder
+# Repo on S3
+crustomize generate path/to/manifest.yml -r s3://bucket/repo
 ```

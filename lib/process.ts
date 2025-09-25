@@ -24,6 +24,62 @@ type Data = {
   valueOrDefault: (value: any, defaultValue: any) => any
 }
 
+function solvePaths(p: string): string[] {
+  const paths: string[] = []
+  if (p.endsWith(".js")) {
+    paths.push(p)
+  } else if (fs.lstatSync(p).isDirectory()) {
+    const dirFiles = fs.readdirSync(p)
+    for (const f of dirFiles) {
+      if (f.endsWith(".js")) {
+        paths.push(path.resolve(p, f))
+      }
+    }
+  } else {
+    throw new Error(`Helpers path is not a .js file or directory: ${p}`)
+  }
+  return paths
+}
+
+function loadCustomHelpers(wd: string, data: Data, flags: Flags, renderEngine: "handlebars" | "ejs") {
+  let helpersPaths = path.resolve("crustomize_helpers")
+  if (process.env["CRUSTOMIZE_HELPERS"]) {
+    helpersPaths = process.env["CRUSTOMIZE_HELPERS"]
+  }
+  if (flags.helpers) {
+    helpersPaths = flags.helpers
+  }
+  console.log("foo", helpersPaths)
+  if (!helpersPaths) return
+
+
+  const helpers = helpersPaths.split(":")
+  for (const helpersPath of helpers) {
+    const paths = solvePaths(helpersPath)
+    for (const p of paths) {
+      if (fs.existsSync(p)) {
+        const customHelpers = require(p)
+        const args = {
+          wd,
+          profile: flags.profile,
+          run,
+        }
+        for (const key in customHelpers) {
+          if (renderEngine === "handlebars") {
+            // @ts-ignore
+            handlebars.registerHelper(key, customHelpers[key](args))
+          } else if (renderEngine === "ejs") {
+            // @ts-ignore
+            data[key] = customHelpers[key](args)
+          }
+        }
+      } else {
+        throw new Error(`Helpers file not found: ${p}`)
+      }
+    }
+  }
+}
+
 export function processYaml(
   yamlString: string,
   values: Record<string, any> | undefined,
@@ -52,19 +108,8 @@ export function processYaml(
     data.lookupCfOutput = helpers.lookupCfOutput(flags.profile)
     data.getParameter = helpers.getParameter(flags.profile)
     data.valueOrDefault = helpers.valueOrDefault
-    if (process.env["CRUSTOMIZE_HELPERS"]) {
-      const customHelpersPath = path.resolve(process.env["CRUSTOMIZE_HELPERS"])
-      const customHelpers = require(customHelpersPath)
-      const args = {
-        wd,
-        profile: flags.profile,
-        run,
-      }
-      for (const key in customHelpers) {
-        // @ts-ignore
-        data[key] = customHelpers[key](args)
-      }
-    }
+
+    loadCustomHelpers(wd, data, flags, "ejs")
 
     return ejs.render(yamlString, data, {
       escape: (s: string) => (s == null ? "" : s),
@@ -88,19 +133,8 @@ export function processYaml(
       "getParameter",
       helpers.getParameter(flags.profile),
     )
-    if (process.env["CRUSTOMIZE_HELPERS"]) {
-      const customHelpersPath = path.resolve(process.env["CRUSTOMIZE_HELPERS"])
-      const customHelpers = require(customHelpersPath)
-      const args = {
-        wd,
-        profile: flags.profile,
-        run,
-      }
-      for (const key in customHelpers) {
-        // @ts-ignore
-        handlebars.registerHelper(key, customHelpers[key](args))
-      }
-    }
+
+    loadCustomHelpers(wd, data, flags, "handlebars")
 
     const template = handlebars.compile(yamlString, { noEscape: true })
     return template(data)

@@ -1,0 +1,5 @@
+base: ../base
+values:
+  NetworkMode: awsvpc
+  VpcStackName: SomeName
+  Foo: true

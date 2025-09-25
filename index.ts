@@ -29,6 +29,7 @@ const cli = meow(
     --config, -c    Config file with flag defaults
     --lint, -l      Lint the output file (requires cfn-lint)
     --env, -e       Environment file
+    --helpers, -H   Path(s) to colon separated custom helpers file or folder
     --help, -h      Show help
     --version, -v   Show version
     --ci, -i        CI/CD mode

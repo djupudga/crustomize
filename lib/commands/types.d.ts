@@ -7,6 +7,7 @@ export type Flags = {
   render?: string
   ci?: boolean
   repo?: string
+  helpers?: string
 }
 
 export type ApplyFunction = (path: string, flags: Flags) => Promise<void>
