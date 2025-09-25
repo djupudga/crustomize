@@ -26,6 +26,9 @@ type Data = {
 
 function solvePaths(p: string): string[] {
   const paths: string[] = []
+  if (fs.existsSync(p) === false) {
+    throw new Error(`Helpers path does not exist: ${p}`)
+  }
   if (p.endsWith(".js")) {
     paths.push(p)
   } else if (fs.lstatSync(p).isDirectory()) {
@@ -42,18 +45,21 @@ function solvePaths(p: string): string[] {
 }
 
 function loadCustomHelpers(wd: string, data: Data, flags: Flags, renderEngine: "handlebars" | "ejs") {
-  let helpersPaths = path.resolve("crustomize_helpers")
+  let helpersPaths = "crustomize_helpers"
   if (process.env["CRUSTOMIZE_HELPERS"]) {
     helpersPaths = process.env["CRUSTOMIZE_HELPERS"]
   }
   if (flags.helpers) {
     helpersPaths = flags.helpers
   }
-  console.log("foo", helpersPaths)
   if (!helpersPaths) return
 
+  if (helpersPaths === "crustomize_helpers" && !fs.existsSync(helpersPaths)) {
+    return
+  }
 
   const helpers = helpersPaths.split(":")
+
   for (const helpersPath of helpers) {
     const paths = solvePaths(helpersPath)
     for (const p of paths) {
