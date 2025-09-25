@@ -16,6 +16,16 @@ export function ls({wd, profile, run}) {
 }
 ```
 
+The parameters and values the outer function receives are:
+
+- wd: A string that points to the folder of the `crustomize.yml` that
+  is being processed.
+- profile: String, AWS_PROFILE or the value of the `--profile/-p` switch
+  or the the default "default" value.
+- run: Function that can run a shell process and return the output.
+  Throws an error in case of a non-zero exit code. Basically a wrapper
+  around nodejs `spawnSync` function.
+
 Crustomize will look for a folder in the 
 working directory called `crustomiez_helpers` and import all `.js` files. Any
 exported function is now available as a helper. You can override the

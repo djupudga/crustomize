@@ -191,8 +191,9 @@ function, like this:
 
 ```javascript
 // Params:
-//   wd: working directory where crustomize is running
-//   profile: AWS_PROFILE from -p flag or undefined if none
+//   wd: String: This is the folder of the current overlay/crustomize.yml
+//       i.e. /path/to/overlay folder
+//   profile: AWS_PROFILE, default is 'default'
 //   bin: function that runs a shell process
 export function cat({wd, profile, run}) {
   return function (filename) {
