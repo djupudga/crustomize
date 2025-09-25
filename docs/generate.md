@@ -48,6 +48,17 @@ If you use an S3 bucket, Crustomize will download the repo to a `.repo`
 folder in the working directory. This folder will be synced every time
 you run the command.
 
+## Repo and custom helpers
+
+If you have custom helpers for a repo, you can store these in a folder
+in the repo and then point to these using the `--helpers/-H` cli flag.
+
+For example, if you repo is in an S3 bucket, and you point to it like
+this: `--repo s3://bucket/ecs/v3` and your helpers are located at
+`s3://bucket/ecs/v3/helpers` the repo will be synced to:
+`./.repo/ecs/v3`. Thus, your helpers will be located at:
+`./.repo/ecs/v3/helpers`.
+
 ## Example usage
 
 ```bash
