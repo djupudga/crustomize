@@ -58,7 +58,9 @@ setup.
   - [.crustomizerc config](config-file.md)
   - [Helper functions](helpers.md)
 
-## Transparenty note
+
+## Transparency note
+
 This is a Work in Progress and very alpha at the moment. For example, all
 `YAML` files must end with `.yml` at the moment.
 
