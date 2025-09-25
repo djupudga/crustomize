@@ -1,23 +1,52 @@
 import { yamlParse } from "yaml-cfn"
 import crustomizeSchema from "../schemas/crustomize.json"
-import type { ApplyFunction } from "./types"
+import type { ApplyFunction, Flags } from "./types"
 import fs from "fs"
 import { processYaml } from "../process"
 import Ajv from "ajv"
 import { AjvValidationError } from "../errors"
 import { apply } from "./apply"
+import { runAwsCommand } from "../aws"
 
 function validatePath(path: string) {
-  if (fs.lstatSync(path).isDirectory()) {
-    throw new Error(
-      `The path "${path}" is a directory. Please provide a file path instead.`,
-    )
+  if (!path) {
+    throw new Error("--repo [path] is required with the 'generate' command.")
   }
-  if (!fs.existsSync(path)) {
-    throw new Error(
-      `The path "${path}" does not exist. Please provide a valid file path.`,
-    )
+
+  if (path.startsWith("s3://")) {
+    // Must not be a file (with an extension)
+    if (path.split("/").pop()?.includes(".")) {
+      throw new Error(
+        `The S3 path "${path}" appears to be a file. Please provide a directory path instead.`,
+      )
+    }
+    // Must have at least bucket and prefix
+    const s3Parts = path.replace("s3://", "").split("/")
+    if (s3Parts.length < 2) {
+      throw new Error(
+        `The S3 path "${path}" is not valid. Please provide a full S3 path including bucket and prefix.`,
+      )
+    }
+  } else {
+    if (fs.lstatSync(path).isDirectory()) {
+      throw new Error(
+        `The path "${path}" is a directory. Please provide a file path instead.`,
+      )
+    }
+    if (!fs.existsSync(path)) {
+      throw new Error(
+        `The path "${path}" does not exist. Please provide a valid file path.`,
+      )
+    }
   }
+}
+
+function downloadFromS3(s3Url: string, localDir: string, flags: Flags) {
+  const args = ["s3", "sync", s3Url, localDir];
+  if (flags.profile) {
+    args.push("--profile", flags.profile);
+  }
+  runAwsCommand(args);
 }
 
 export const generate: ApplyFunction = async (path, flags) => {
@@ -32,7 +61,15 @@ export const generate: ApplyFunction = async (path, flags) => {
   if (!flags.repo) {
     throw new Error("The --repo flag is required for the 'generate' command.")
   }
-  const repo = flags.repo
+  let repo = flags.repo
+
+  if (repo.startsWith("s3://")) {
+    const repoPath = repo.replace("s3://", "")
+    const repoDir = `./.repo/${repoPath}`
+    fs.mkdirSync(repoDir, { recursive: true })
+    downloadFromS3(repo, repoDir, flags)
+    repo = repoDir
+  }
   // Begin processing crustomize manifest
   const manifestPath = `${repo}/${type}/crustomize.yml.in`
   if (!fs.existsSync(manifestPath)) {
