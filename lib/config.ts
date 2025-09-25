@@ -41,7 +41,7 @@ export function applyConfig(flags: Flags): Flags {
     copy.render = "handlebars"
   }
   if (!copy.profile) {
-    copy.profile = "default"
+    copy.profile = process.env["AWS_PROFILE"] ?? "default"
   }
   return copy
 }
