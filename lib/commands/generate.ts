@@ -53,11 +53,12 @@ export const generate: ApplyFunction = async (path, flags) => {
   validatePath(path)
   // Load app generation
   const fileStr = fs.readFileSync(path, "utf8").toString()
-  const genYamlData = yamlParse(fileStr)
-  if (!genYamlData.type) {
+  const genYamlData: Record<string, any> = yamlParse(fileStr)
+  if (!genYamlData["type"]) {
     throw new Error(`The file "${path}" does not contain a 'type' field.`)
   }
-  const type = genYamlData.type
+  const type = genYamlData["type"]
+  // Process repo
   if (!flags.repo) {
     throw new Error("The --repo flag is required for the 'generate' command.")
   }
@@ -70,6 +71,20 @@ export const generate: ApplyFunction = async (path, flags) => {
     downloadFromS3(repo, repoDir, flags)
     repo = repoDir
   }
+  // Validate schemas
+  const ajv = new Ajv()
+  // Validate generate app schema
+  const genSchema = JSON.parse(
+    fs.readFileSync(`${repo}/${type}/schema.json`, "utf8").toString(),
+  )
+  const validateYaml = ajv.compile(genSchema)
+  const validYaml = validateYaml(genYamlData)
+  if (!validYaml) {
+    const e = new AjvValidationError(validateYaml.errors)
+    console.error(e.message)
+    console.error(JSON.stringify(validateYaml.errors, null, 2))
+    process.exit(1)
+  }
   // Begin processing crustomize manifest
   const manifestPath = `${repo}/${type}/crustomize.yml.in`
   if (!fs.existsSync(manifestPath)) {
@@ -78,20 +93,13 @@ export const generate: ApplyFunction = async (path, flags) => {
   const manifestFile = fs.readFileSync(manifestPath, "utf8").toString()
   const processedManifest = processYaml(manifestFile, genYamlData, flags, repo)
   const manifestData = yamlParse(processedManifest)
-  const ajv = new Ajv()
   const validateManifest = ajv.compile(crustomizeSchema)
   const valid = validateManifest(manifestData)
   if (!valid) {
-    throw new AjvValidationError(validateManifest.errors)
-  }
-  // Validate generate app schema
-  const genSchema = JSON.parse(
-    fs.readFileSync(`${repo}/${type}/schema.json`, "utf8").toString(),
-  )
-  const validateYaml = ajv.compile(genSchema)
-  const validYaml = validateYaml(genYamlData)
-  if (!validYaml) {
-    throw new AjvValidationError(validateYaml.errors)
+    const e = new AjvValidationError(validateManifest.errors)
+    console.error(e.message)
+    console.error(JSON.stringify(validateManifest.errors, null, 2))
+    process.exit(1)
   }
   try {
     // So far so good. Time to generate things.
