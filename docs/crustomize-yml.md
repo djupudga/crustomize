@@ -38,6 +38,7 @@ patches:
 | `values`   | Arbitrary values accessible from templates.                           |
 | `patches`  | JSON patch operations applied after merging templates.                |
 
+
 ## Crustomize JSON Schema
 
 ```json
