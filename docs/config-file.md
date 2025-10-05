@@ -1,4 +1,4 @@
-# `.crustomizerc` file
+# .crustomizerc
 
 Command line flags can be stored in a `.crustomizerc` file written in YAML. When
 running `crustomize` it will look for this file in the current working directory.
@@ -9,6 +9,8 @@ Example:
 ```yaml
 render: ejs
 profile: my-profile
+lint: true
+output: deploy_folder
 ```
 
 Values in the config file are used as defaults. Flags passed on the command line

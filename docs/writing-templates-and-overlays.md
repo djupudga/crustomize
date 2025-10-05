@@ -174,7 +174,7 @@ When you run `crustomize apply crustomize/overlays/test` the `{{values.Stage}}`
 directive will be replaced with the value defined in the relevant
 `crustomize.yml` file. Now, repeat for `overlays/prod/`.
 
-In addition to `values.xxx` you can use the helpers documented in
+In addition to `values.Property` you can use the helpers documented in
 [doc/helpers.md](./helpers.md) as well as environment variables.
 Environment variables are accessed using `env.NAME_OF_VARIABLE`.
 You can also defined common variables in an `env.yml` file and reference
