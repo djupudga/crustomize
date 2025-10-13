@@ -21,6 +21,7 @@ async function getS3Files(
   base: string,
   flags: Flags,
   values: Record<string, any>,
+  stack?: Record<string, any>
 ): Promise<BaseFiles> {
   const options = flags.profile ? { profile: flags.profile } : {}
   const s3 = new S3Client(options)
@@ -45,7 +46,7 @@ async function getS3Files(
       const output = await s3.send(new GetObjectCommand(params))
       const fileStr = await output.Body?.transformToString()
       if (fileStr) {
-        const file = processYaml(fileStr, values, flags, base)
+        const file = processYaml(fileStr, values, flags, base, stack)
         const fileName = key.split("/").pop() as string
         files[fileName] = yamlParse(file) || {}
       }
@@ -63,9 +64,10 @@ async function getBaseFiles(
   crustomizePath: string,
   flags: Flags,
   values: Record<string, any>,
+  stack?: Record<string, any>,
 ): Promise<BaseFiles> {
   if (base.startsWith("s3://")) {
-    return getS3Files(base, flags, values)
+    return getS3Files(base, flags, values, stack)
   } else {
     const basePath = path.resolve(crustomizePath, base)
     const baseFileNames = fs.readdirSync(basePath).filter(ymlFilter)
@@ -74,7 +76,7 @@ async function getBaseFiles(
       if (!fs.lstatSync(filePath).isFile()) return acc
 
       const fileStr = fs.readFileSync(filePath, "utf8").toString()
-      const file = processYaml(fileStr, values, flags, basePath)
+      const file = processYaml(fileStr, values, flags, basePath, stack)
       acc[fileName] = yamlParse(file) || {}
       return acc
     }, {})
@@ -111,6 +113,7 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
       crustomizePath,
       flags,
       manifest.values,
+      manifest.stack
     )
 
     // Load all overlay files
@@ -122,7 +125,7 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
       const filePath = `${overlayPath}`
       if (!fs.lstatSync(filePath).isFile()) return
       const fileStr = fs.readFileSync(filePath, "utf8").toString()
-      const file = processYaml(fileStr, manifest.values, flags, overlayPath)
+      const file = processYaml(fileStr, manifest.values, flags, overlayPath, manifest.stack)
       const fileName = overlayPath.split("/").pop() as string
       overlayFiles[fileName] = yamlParse(file) || {}
     })
@@ -172,6 +175,7 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
         manifest.values,
         flags,
         path.resolve(crustomizePath),
+        manifest.stack,
       )
       if (flags.output) {
         const paramsJson = yamlParse(paramsYaml)

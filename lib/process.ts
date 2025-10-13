@@ -11,6 +11,7 @@ import { run } from "./run"
 type Data = {
   env: Record<string, string>
   values: Record<string, any>
+  stack: Record<string, any>
 } & {
   indent: typeof helpers.indent
   toYaml: (obj: any) => string
@@ -92,9 +93,12 @@ export function processYaml(
   values: Record<string, any> | undefined,
   flags: Flags,
   wd: string,
+  stack?: Record<string, any>
 ) {
   const data = { values: values || {} } as Data
   data.env = Object.assign({}, process.env) as Record<string, string>
+  data.stack = stack || {}
+
   if (flags.env) {
     const envFile = flags.env
     const env = fs.readFileSync(envFile, "utf8").toString()

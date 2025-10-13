@@ -175,7 +175,11 @@ directive will be replaced with the value defined in the relevant
 `crustomize.yml` file. Now, repeat for `overlays/prod/`.
 
 In addition to `values.Property` you can use the helpers documented in
-[doc/helpers.md](./helpers.md) as well as environment variables.
+[doc/helpers.md](./helpers.md), environment variables and, if available
+in `crustomize.yml` any property under `stack`, accessed like this:
+`{{ stack.property }}`. For example, to access the CloudFormation stack
+name, you would type: `{{ stack.name }}`.
+
 Environment variables are accessed using `env.NAME_OF_VARIABLE`.
 You can also defined common variables in an `env.yml` file and reference
 it using the `-e` flag. These will also be accessible using the `env.NAME`
