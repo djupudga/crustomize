@@ -11,7 +11,7 @@ profile: my-aws-profile
 stack:
   name: my-stack
   capabilities:
-    - CAPABILITY_IAM
+    - CAPABILITY_NAMED_IAM
   tags:
     Environment: dev
 params: ./params.yml
