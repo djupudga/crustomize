@@ -6,12 +6,14 @@ import { lint } from "../lint"
 import { handleError } from "../errors"
 import { cleanUpAwsFiles } from "../cleanup"
 import type { ApplyFunction } from "./types.d"
+import { getManifest } from "../manifest"
 
 export const validate: ApplyFunction = async (crustomizePath, flags) => {
   try {
     if (crustomizePath.endsWith("/")) {
       crustomizePath = crustomizePath.slice(0, -1)
     }
+    const manifest = getManifest(crustomizePath)
 
     if (!flags.output) {
       fs.mkdirSync("./.crustomize_deploy", { recursive: true })
@@ -29,8 +31,14 @@ export const validate: ApplyFunction = async (crustomizePath, flags) => {
       "--output",
       "json",
     ]
+    if (manifest.profile) {
+      flags.profile = manifest.profile
+    }
     if (flags.profile) {
       args.push("--profile", flags.profile)
+    }
+    if (manifest.stack?.capabilities) {
+      args.push("--capabilities", manifest.stack.capabilities.join(" "))
     }
 
     const result = runAwsCommand(args)
