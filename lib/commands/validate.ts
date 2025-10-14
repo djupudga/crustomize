@@ -37,12 +37,9 @@ export const validate: ApplyFunction = async (crustomizePath, flags) => {
     if (flags.profile) {
       args.push("--profile", flags.profile)
     }
-    if (manifest.stack?.capabilities) {
-      args.push("--capabilities", manifest.stack.capabilities.join(" "))
-    }
 
     const result = runAwsCommand(args)
-    console.log(result.trim())
+    console.log(result)
 
     if (flags.lint) {
       lint(path.join(flags.output, "template.yml"))
