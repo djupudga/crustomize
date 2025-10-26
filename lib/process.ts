@@ -31,7 +31,7 @@ function solvePaths(p: string): string[] {
     throw new Error(`Helpers path does not exist: ${p}`)
   }
   if (p.endsWith(".js")) {
-    paths.push(p)
+    paths.push(path.resolve(p))
   } else if (fs.lstatSync(p).isDirectory()) {
     const dirFiles = fs.readdirSync(p)
     for (const f of dirFiles) {
@@ -45,7 +45,12 @@ function solvePaths(p: string): string[] {
   return paths
 }
 
-function loadCustomHelpers(wd: string, data: Data, flags: Flags, renderEngine: "handlebars" | "ejs") {
+function loadCustomHelpers(
+  wd: string,
+  data: Data,
+  flags: Flags,
+  renderEngine: "handlebars" | "ejs",
+) {
   let helpersPaths = "crustomize_helpers"
   if (process.env["CRUSTOMIZE_HELPERS"]) {
     helpersPaths = process.env["CRUSTOMIZE_HELPERS"]
@@ -93,7 +98,7 @@ export function processYaml(
   values: Record<string, any> | undefined,
   flags: Flags,
   wd: string,
-  stack?: Record<string, any>
+  stack?: Record<string, any>,
 ) {
   const data = { values: values || {} } as Data
   data.env = Object.assign({}, process.env) as Record<string, string>

@@ -7,6 +7,7 @@ but you can use your own if you prefer. In this guide we will create
 one **test** overlay and one **prod** overlay.
 
 ## Step 1: Folder structure
+
 Start your project by defining a **base** template. First
 create a folder in your project for templates and overlays:
 
@@ -43,6 +44,7 @@ Resources:
     Properties:
       Description: This is a test execution role
 ```
+
 Note that the `Resources:` property is crucial for **crustomize** to merge
 the overlay.
 
@@ -199,9 +201,9 @@ function, like this:
 //       i.e. /path/to/overlay folder
 //   profile: AWS_PROFILE, default is 'default'
 //   bin: function that runs a shell process
-export function cat({wd, profile, run}) {
+export function cat({ wd, profile, run }) {
   return function (filename) {
-    const cat = bin.bind('cat')
+    const cat = bin.bind("cat")
     return cat([filename])
   }
 }

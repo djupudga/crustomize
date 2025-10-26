@@ -8,6 +8,7 @@ export type Flags = {
   ci?: boolean
   repo?: string
   helpers?: string
+  hooks?: string
 }
 
-export type ApplyFunction = (path: string, flags: Flags) => Promise<void>
+export type ApplyFunction<R = void> = (path: string, flags: Flags) => Promise<R>

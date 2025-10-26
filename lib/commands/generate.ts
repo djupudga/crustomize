@@ -42,11 +42,11 @@ function validatePath(path: string) {
 }
 
 function downloadFromS3(s3Url: string, localDir: string, flags: Flags) {
-  const args = ["s3", "sync", s3Url, localDir];
+  const args = ["s3", "sync", s3Url, localDir]
   if (flags.profile) {
-    args.push("--profile", flags.profile);
+    args.push("--profile", flags.profile)
   }
-  runAwsCommand(args);
+  runAwsCommand(args)
 }
 
 export const generate: ApplyFunction = async (path, flags) => {

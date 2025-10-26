@@ -26,15 +26,16 @@ The parameters and values the outer function receives are:
   Throws an error in case of a non-zero exit code. Basically a wrapper
   around nodejs `spawnSync` function.
 
-Crustomize will look for a folder in the 
+Crustomize will look for a folder in the
 working directory called `crustomiez_helpers` and import all `.js` files. Any
 exported function is now available as a helper. You can override the
 folder location using the `--helpers/-H` switch.
 
-Finally, you can also provide a colon (`:`) separated string of absolute 
+Finally, you can also provide a colon (`:`) separated string of absolute
 or relative JS files/folders in the `CRUSTOMIZE_HELPERS` environment variable.
 
 The priority is this (lower number higher priority):
+
 1. CLI flag (`--helpers/-H`).
 2. Environment variable (`CRUSTOMIZE_HELPERS`).
 3. Folder (`crustomize_helpers`).

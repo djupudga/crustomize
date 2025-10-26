@@ -52,12 +52,12 @@ setup.
 - [Writing templates and overlays](writing-templates-and-overlays.md)
 - [Deploying to AWS](deploying-to-aws.md)
 - [Custom manifests](generate.md)
+- [Custom resources using hooks](custom-resources.md)
 - References
   - [Command line reference](commands.md)
   - [crustomize.yml file](crustomize-yml.md)
   - [.crustomizerc config](config-file.md)
   - [Helper functions](helpers.md)
-
 
 ## Transparency note
 

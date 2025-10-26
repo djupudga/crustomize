@@ -7,6 +7,7 @@ import ora, { type Ora } from "ora"
 import { handleError } from "../errors"
 import { hashFile } from "../file-hasher"
 import { cleanUpAwsFiles } from "../cleanup"
+import { firePostHooks, firePreHooks } from "../hooks"
 
 export const executeChangeSet: ApplyFunction = async (
   crustomizePath,
@@ -43,9 +44,11 @@ export const executeChangeSet: ApplyFunction = async (
       flags.output = "./.crustomize_deploy"
     }
 
-    await apply(crustomizePath, flags)
+    const customResources = await apply(crustomizePath, flags)
 
     const hash = await hashFile(`${flags.output}/template.yml`)
+
+    await firePreHooks(flags, customResources)
 
     const args = [
       "cloudformation",
@@ -61,6 +64,7 @@ export const executeChangeSet: ApplyFunction = async (
     args.push("--change-set-name", `${manifest.stack.name}-cs-${hash}`)
 
     runAwsCommand(args)
+    await firePostHooks(flags, customResources)
 
     console.log(`Change set ${manifest.stack.name}-cs-${hash} executed`)
 

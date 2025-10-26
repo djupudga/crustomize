@@ -13,7 +13,7 @@ const cli = meow(
 
   Commands:
     apply              Applies overlays to a base file
-    generate           Generates a CloudFormation template 
+    generate           Generates a CloudFormation template
     deploy             Deploys a CloudFormation stack
     create-change-set  Creates a CloudFormation change set
     execute-change-set Executes a CloudFormation change set
@@ -30,6 +30,7 @@ const cli = meow(
     --lint, -l      Lint the output file (requires cfn-lint)
     --env, -e       Environment file
     --helpers, -H   Path(s) to colon separated custom helpers file or folder
+    --hooks, -K     Path(s) to colon separated hooks file or folder
     --help, -h      Show help
     --version, -v   Show version
     --ci, -i        CI/CD mode
@@ -89,6 +90,16 @@ const cli = meow(
         isRequired: false,
         default: false,
         aliases: ["l"],
+      },
+      helpers: {
+        type: "string",
+        isRequired: false,
+        aliases: ["H"],
+      },
+      hooks: {
+        type: "string",
+        isRequired: false,
+        aliases: ["K"],
       },
     },
   },

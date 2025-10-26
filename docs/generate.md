@@ -71,4 +71,3 @@ See the example under `examples/repo` for a working setup:
 crustomize generate examples/repo/examples/example.yml \
   --repo examples/repo/repo --output ./build
 ```
-

@@ -8,7 +8,7 @@ import { validate } from "./validate"
 import { generate } from "./generate"
 
 type Commands = {
-  apply: ApplyFunction
+  apply: ApplyFunction<Record<string, any>>
   deploy: ApplyFunction
   ["create-change-set"]: ApplyFunction
   ["execute-change-set"]: ApplyFunction

@@ -21,7 +21,7 @@ async function getS3Files(
   base: string,
   flags: Flags,
   values: Record<string, any>,
-  stack?: Record<string, any>
+  stack?: Record<string, any>,
 ): Promise<BaseFiles> {
   const options = flags.profile ? { profile: flags.profile } : {}
   const s3 = new S3Client(options)
@@ -84,7 +84,10 @@ async function getBaseFiles(
   }
 }
 
-export const apply: ApplyFunction = async (crustomizePath, flags) => {
+export const apply: ApplyFunction<Record<string, any>> = async (
+  crustomizePath,
+  flags,
+) => {
   if (crustomizePath.endsWith("/")) {
     crustomizePath = crustomizePath.slice(0, -1)
   }
@@ -101,10 +104,9 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
 
     // If the manifest defines params, then the --output parameter is required.
     if (manifest.params && !flags.output) {
-      console.error(
+      throw new Error(
         "The --output parameter is required when the manifest defines params.",
       )
-      process.exit(1)
     }
 
     // Load all files in the base directory.
@@ -113,7 +115,7 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
       crustomizePath,
       flags,
       manifest.values,
-      manifest.stack
+      manifest.stack,
     )
 
     // Load all overlay files
@@ -124,24 +126,43 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
     overlayPaths.forEach((overlayPath) => {
       const filePath = `${overlayPath}`
       if (!fs.lstatSync(filePath).isFile()) return
+
       const fileStr = fs.readFileSync(filePath, "utf8").toString()
-      const file = processYaml(fileStr, manifest.values, flags, overlayPath, manifest.stack)
+      const file = processYaml(
+        fileStr,
+        manifest.values,
+        flags,
+        overlayPath,
+        manifest.stack,
+      )
       const fileName = overlayPath.split("/").pop() as string
       overlayFiles[fileName] = yamlParse(file) || {}
     })
 
     // Merge all base files into a single object
-    let merged = {}
+    let merged: any = {}
     for (const baseFile of Object.values(baseFiles)) {
-      merged = deepmerge(merged, baseFile)
+      merged = deepmerge(merged, baseFile) as any
     }
     // Merge all overlay files into the merged object
     for (const overlayFile of Object.values(overlayFiles)) {
-      merged = deepmerge(merged, overlayFile)
+      merged = deepmerge(merged, overlayFile) as any
     }
     // Apply JSON patches, if there are any
     if (manifest.patches) {
       merged = jsonpatch.apply(manifest.patches, merged) as any
+    }
+
+    // Extract custom resources
+    const customPrefix = "Crustomize::"
+    const customResources: Record<string, any> = {}
+    for (const key in merged.Resources) {
+      const resource = merged.Resources[key]
+      if (resource.Type && resource.Type.startsWith(customPrefix)) {
+        const customType = resource.Type.slice(customPrefix.length)
+        customResources[customType] = resource
+        delete (merged as any)["Resources"][key]
+      }
     }
 
     const result = yamlDump(merged)
@@ -152,10 +173,9 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
         fs.mkdirSync(flags.output, { recursive: true })
       }
       if (!fs.lstatSync(flags.output).isDirectory()) {
-        console.error(
+        throw new Error(
           `Output path "${flags.output}" is not a folder. Please specify a folder.`,
         )
-        process.exit(1)
       } else {
         fs.writeFileSync(path.join(flags.output, "template.yml"), result)
       }
@@ -185,8 +205,10 @@ export const apply: ApplyFunction = async (crustomizePath, flags) => {
         )
       }
     }
+    return customResources
   } catch (err) {
     if (process.env["DEBUG"]) console.error(err)
     handleError(err)
+    return {}
   }
 }

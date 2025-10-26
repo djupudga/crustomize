@@ -1,6 +1,6 @@
 # Deploying to AWS
 
-By default, running `crustomize apply [path]`  outputs a template to
+By default, running `crustomize apply [path]` outputs a template to
 the standard output. This output can be written to file either by redirecting
 the output to a file or by providing a folder name using the `-o` switch.
 
@@ -84,7 +84,7 @@ format, that is similar to this:
 - ParameterKey: SomeParameterName
   ParameterValue: Some value
 - ParameterKey: AnotherParameterName
-  ParameterValue: {{ values.SomeValue }}
+  ParameterValue: { { values.SomeValue } }
 ```
 
 You then must reference the parameter file in your `crustomize.yml` file:
@@ -114,4 +114,4 @@ crustomize deploy path/to/overlay/folder
 ```
 
 > Note: Crustomize does not manage the life-cycle of your stack. It can
-  only deploy and manage change-sets. Use the AWS CLI to delete stacks.
+> only deploy and manage change-sets. Use the AWS CLI to delete stacks.

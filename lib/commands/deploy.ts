@@ -6,6 +6,7 @@ import { runAwsCommand } from "../aws"
 import ora, { type Ora } from "ora"
 import { handleError } from "../errors"
 import { cleanUpAwsFiles } from "../cleanup"
+import { firePostHooks, firePreHooks } from "../hooks"
 
 export const deploy: ApplyFunction = async (crustomizePath, flags) => {
   let spinner: Ora | undefined
@@ -39,7 +40,9 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
       flags.output = "./.crustomize_deploy"
     }
 
-    await apply(crustomizePath, flags)
+    const customResources = await apply(crustomizePath, flags)
+
+    await firePreHooks(flags, customResources)
 
     const args = [
       "cloudformation",
@@ -68,6 +71,7 @@ export const deploy: ApplyFunction = async (crustomizePath, flags) => {
     }
 
     runAwsCommand(args)
+    await firePostHooks(flags, customResources)
     spinner?.stop()
 
     console.log(`Deployed ${manifest.stack.name}`)
