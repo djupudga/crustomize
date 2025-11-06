@@ -54,7 +54,7 @@ export const helpers = {
   getFile(root: string) {
     return (name: string) => {
       return fs
-        .readFileSync(path.resolve(process.cwd(), path.dirname(root), name))
+        .readFileSync(path.resolve(process.cwd(), root, name))
         .toString()
     }
   },
@@ -72,7 +72,7 @@ export const helpers = {
     return (name: string) => {
       return Buffer.from(
         fs
-          .readFileSync(path.resolve(process.cwd(), path.dirname(root), name))
+          .readFileSync(path.resolve(process.cwd(), root, name))
           .toString(),
       ).toString("base64")
     }

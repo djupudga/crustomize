@@ -100,6 +100,11 @@ export function processYaml(
   wd: string,
   stack?: Record<string, any>,
 ) {
+  wd = path.resolve(wd)
+  // Check if wd is a file
+  if (fs.lstatSync(wd).isFile()) {
+    wd = path.dirname(wd)
+  }
   const data = { values: values || {} } as Data
   data.env = Object.assign({}, process.env) as Record<string, string>
   data.stack = stack || {}
