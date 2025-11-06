@@ -53,7 +53,7 @@ export function handleError(err: any): void {
   if ("code" in err) {
     switch (err.code) {
       case "ENOENT":
-        console.error(`Error: file not found at ${err.path}`)
+        console.error(`Error: ${err.message}`)
         break
       case "EACCES":
         console.error(`Error: permission denied for ${err.path}`)
