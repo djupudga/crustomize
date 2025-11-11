@@ -109,7 +109,7 @@ export const helpers = {
     return (name: string, query?: string) => getParameter(name, query, profile)
   },
   /**
-   * Picks value if not null or undedefined, otherwise defaultValue.
+   * Picks value if not null or undefined, otherwise defaultValue.
    * @param value The value to check.
    * @param defaultValue The default value to return if the value is null or undefined.
    * @returns The picked value.
