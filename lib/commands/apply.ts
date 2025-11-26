@@ -46,7 +46,6 @@ async function getS3Files(
       const output = await s3.send(new GetObjectCommand(params))
       const fileStr = await output.Body?.transformToString()
       if (fileStr) {
-        console.log("wd", base)
         const file = processYaml(fileStr, values, flags, "./", stack)
         const fileName = key.split("/").pop() as string
         files[fileName] = yamlParse(file) || {}
