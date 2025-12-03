@@ -71,13 +71,18 @@ export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
       args.push("--capabilities", manifest.stack.capabilities.join(" "))
     }
     if (manifest.stack.tags) {
-      args.push(
-        "--tags",
-        Object.entries(manifest.stack.tags)
-          .map(([key, value]) => `${key}=${value}`)
-          .join(" "),
-      )
+      args.push("--tags")
+      Object.entries(manifest.stack.tags).forEach(([key, value]) => {
+        args.push(`Key=${key},Value=${value}`)
+      })
     }
+    //   args.push(
+    //     "--tags",
+    //     `${Object.entries(manifest.stack.tags)
+    //         .map(([key, value]) => `"Key=${key},Value=${value}"`)
+    //         .join(" ")}`,
+    //   )
+    // }
     if (manifest.params) {
       args.push("--parameters", `file://${flags.output}/params.json`)
     }
