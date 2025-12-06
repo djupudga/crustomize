@@ -70,7 +70,8 @@ crustomize generate mydb.yml --repo ./my-catalog --output ./vendor
 ```
 
 2. Extend with Overlays
-Create a local crustomize.yml that treats the generated ./vendor folder as
+
+Create a local `crustomize.yml` that treats the generated `./vendor` folder as
 your base. This allows you to "patch" the standard catalog item without
 modifying the generated files directly.
 
