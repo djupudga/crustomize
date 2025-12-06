@@ -112,8 +112,8 @@ Crustomize will then pre-render the `crustomize.yml.in` file using all
 the properties of the `mydb.yml` file. Once that step is complete,
 Crustomize will then apply the overlay as usual.
 
-Note that in order to deploy the generated template, you must use the
-AWS CLI.
+If using "Direct Workflow", then in order to deploy the generated template,
+you must use the AWS CLI.
 
 ## Repo
 
