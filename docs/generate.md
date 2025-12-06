@@ -47,7 +47,7 @@ JavaScript or Python project.
 
 ## Direct Workflow
 
-In the "Direct Workflow" the manifest is deployed directloy to AWS and
+In the "Direct Workflow" the manifest is deployed directly to AWS and
 involves these steps:
 
 - **Generate**: Generate the CloudFormation template from the manifest
