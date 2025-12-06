@@ -51,7 +51,7 @@ setup.
 - [Structuring your project](project-structure.md)
 - [Writing templates and overlays](writing-templates-and-overlays.md)
 - [Deploying to AWS](deploying-to-aws.md)
-- [Custom manifests](generate.md)
+- [Service Catalog and vendoring](generate.md)
 - [Custom resources using hooks](custom-resources.md)
 - References
   - [Command line reference](commands.md)

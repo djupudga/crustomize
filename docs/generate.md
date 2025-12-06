@@ -3,9 +3,24 @@
 While Crustomize mimics **kustomize** with overlays and **Helm Charts**
 with its template rendering support, the `generate` command is a bit different.
 
-It enables you to define a DSL like manifest format that results in
-a generated AWS CloudFormation template. For example, you could have
-a manifest YAML file similar to this:
+It allows you to create a central "Repo" of standard patterns (e.g. an RDS
+definition, a Lambda setup) and lets developers "consume" them using a simple
+manifest. The generated template can be immediately deployed or, if you prefer,
+"vendored" into a folder you check into version control. This "vendored"
+template can now act as a base template for your overlays.
+
+This "vendor pattern" workflow is as follows:
+
+- **Hydrate**: Generate standard template into a folder
+- **Commit**: Commit the template into source control
+- **Overlay**: Point your local `crustomize.yml` to this vendor folder
+  as its `base`, applying your own project specific customizations on top.
+
+## Developer Experience
+
+Instead of the writing 500 lines of CloudFormation code, the developer
+writes a simple manifest, referencing a service definition in the
+service catalog (repo), like this:
 
 ```yaml
 # mydb.yml
@@ -18,10 +33,61 @@ def:
 
 When you run the `crustomize generate mydb.yml -R repo_path` command
 it would output a CloudFormation template for bringing up that
-resource. This allows you to define standard resources in a DevEx
-friendly way.
+resource.
 
-## How it works
+Think of the "Vendor Workflow" exactly like managing a software library in a
+JavaScript or Python project.
+
+| **Crustomize Concept** | **Software Dev Analogy** | **Why it helps them grok it** |
+| :--- | :--- | :--- |
+| **`manifest.yml`** | **`package.json`** | This is your high-level declaration. You don't write the database code here; you just declare, "I need the `rds/postgres` package, specifically the `production` variant." |
+| **`crustomize generate`** | **`npm install`** | This is the build step. It goes out to the registry (your Repo), fetches the logic, and compiles it into local files. |
+| **`./vendor` folder** | **`node_modules/`** | This is where the complex code lives. Just like you **never edit files inside `node_modules` manually** (because they get overwritten on the next install), you never edit the `./vendor` CloudFormation files directly. |
+| **`crustomize.yml`** | **`import ... extends`** | This is your application logic. You are effectively saying: `import BaseStack from './vendor'; class MyStack extends BaseStack { ...apply patches... }`. |
+
+## Direct Workflow
+
+In the "Direct Workflow" the manifest is deployed directloy to AWS and
+involves these steps:
+
+- **Generate**: Generate the CloudFormation template from the manifest
+- **Deploy**: Deploy the generated template using the aws cli.
+
+Any changes to the Service definition in the Service Catalog since the
+last deploy are immediately present in the deployed service.
+
+## The Vendor Workflow
+
+While you can deploy the generated template directly, the most robust way
+is to use `generate` is to treat the output as a base for your own
+customizations.
+
+1. Generate the base (hydrate)
+
+```shell
+# Compile the manifest into a standard CloudFormation template in ./vendor
+crustomize generate mydb.yml --repo ./my-catalog --output ./vendor
+```
+
+2. Extend with Overlays
+Create a local crustomize.yml that treats the generated ./vendor folder as
+your base. This allows you to "patch" the standard catalog item without
+modifying the generated files directly.
+
+```yml
+# crustomize.yml
+base: ./vendor
+overlays:
+  - overlays/prod/permissions.yml
+values:
+  Foo: true
+patches:
+  - op: replace
+    path: "/Resources/Path/To/Array/0/Property"
+    value: some value
+```
+
+## How it works internally
 
 The `generate` command would locate the repository folder and
 use the value of the `type` property to find the proper overlay. In the
