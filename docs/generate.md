@@ -59,7 +59,7 @@ last deploy are immediately present in the deployed service.
 ## The Vendor Workflow
 
 While you can deploy the generated template directly, the most robust way
-is to use `generate` is to treat the output as a base for your own
+is to use `generate` and to treat the output as a base for your own
 customizations.
 
 1. Generate the base (hydrate)
