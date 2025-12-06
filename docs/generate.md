@@ -90,6 +90,17 @@ patches:
 
 ## How it works internally
 
+Consider again this manifest:
+
+```yaml
+# mydb.yml
+type: rds/postgres
+name: MyPostgresDB
+def:
+  cluster: production
+  size: small
+```
+
 The `generate` command would locate the repository folder and
 use the value of the `type` property to find the proper overlay. In the
 above example, the repo is located at `./repo_path` and the value of the
