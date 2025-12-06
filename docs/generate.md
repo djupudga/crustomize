@@ -38,7 +38,7 @@ resource.
 Think of the "Vendor Workflow" exactly like managing a software library in a
 JavaScript or Python project.
 
-| **Crustomize Concept** | **Software Dev Analogy** | **Why it helps them grok it** |
+| **Crustomize Concept** | **Software Dev Analogy** | **Explanation** |
 | :--- | :--- | :--- |
 | **`manifest.yml`** | **`package.json`** | This is your high-level declaration. You don't write the database code here; you just declare, "I need the `rds/postgres` package, specifically the `production` variant." |
 | **`crustomize generate`** | **`npm install`** | This is the build step. It goes out to the registry (your Repo), fetches the logic, and compiles it into local files. |
