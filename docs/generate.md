@@ -107,7 +107,7 @@ above example, the repo is located at `./repo_path` and the value of the
 `type` property is `rds/postgres`. Crustomize would then look for a
 `./repo_path/rds/postgres` folder. That folder should have at minimum two
 files: `schema.json` and `crustomize.yml.in`. The JSON schema is used to
-validate the correctness of the `mydb.yml` manifest. If successful
+validate the correctness of the `mydb.yml` manifest. If successful,
 Crustomize will then pre-render the `crustomize.yml.in` file using all
 the properties of the `mydb.yml` file. Once that step is complete,
 Crustomize will then apply the overlay as usual.
