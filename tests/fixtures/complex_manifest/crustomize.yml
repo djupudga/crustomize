@@ -1,0 +1,9 @@
+base: ../base
+overlays:
+  - myFile.yml
+  - file: ./Template.yml
+    arrayMerge: replace
+  - file: ./params.yml
+    arrayMerge: append
+values:
+  Foo: true

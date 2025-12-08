@@ -6,7 +6,7 @@ import { processYaml } from "../process"
 import deepmerge from "deepmerge"
 import { lint, lintStdin } from "../lint"
 import type { ApplyFunction, Flags } from "./types.d"
-import { getManifest } from "../manifest"
+import { getManifest, normalizeOverlay, type ArrayMergeStrategy, type NormalizedOverlay } from "../manifest"
 import {
   S3Client,
   GetObjectCommand,
@@ -120,11 +120,14 @@ export const apply: ApplyFunction<Record<string, any>> = async (
 
     // Load all overlay files
     const overlayFiles: OverlayFiles = {}
-    const overlayPaths = (manifest.overlays || []).map((overlay) =>
-      path.resolve(crustomizePath, overlay),
-    )
+    const overlayPaths: NormalizedOverlay[] = (manifest.overlays || []).map((overlay) => {
+      const normalized = normalizeOverlay(overlay)
+      normalized.file = path.resolve(crustomizePath, normalized.file)
+      return normalized
+    })
+    const strategies: Record<string,ArrayMergeStrategy> = {}
     overlayPaths.forEach((overlayPath) => {
-      const filePath = `${overlayPath}`
+      const filePath = `${overlayPath.file}`
       if (!fs.lstatSync(filePath).isFile()) return
 
       const fileStr = fs.readFileSync(filePath, "utf8").toString()
@@ -132,11 +135,12 @@ export const apply: ApplyFunction<Record<string, any>> = async (
         fileStr,
         manifest.values,
         flags,
-        overlayPath,
+        overlayPath.file,
         manifest.stack,
       )
-      const fileName = overlayPath.split("/").pop() as string
+      const fileName = overlayPath.file.split("/").pop() as string
       overlayFiles[fileName] = yamlParse(file) || {}
+      strategies[fileName] = overlayPath.arrayMerge
     })
 
     // Merge all base files into a single object
@@ -144,9 +148,20 @@ export const apply: ApplyFunction<Record<string, any>> = async (
     for (const baseFile of Object.values(baseFiles)) {
       merged = deepmerge(merged, baseFile) as any
     }
+
+    function deepmergeOptions(arrayMergeStrategy: ArrayMergeStrategy) {
+      if (arrayMergeStrategy === "append") return undefined
+      return {
+        arrayMerge: (_destinationArray: any[], sourceArray: any[]) => {
+          return sourceArray
+        },
+      }
+    }
+
     // Merge all overlay files into the merged object
-    for (const overlayFile of Object.values(overlayFiles)) {
-      merged = deepmerge(merged, overlayFile) as any
+    for (const [key, overlayFile] of Object.entries(overlayFiles)) {
+      const strategy = strategies[key]
+      merged = deepmerge(merged, overlayFile, deepmergeOptions(strategy)) as any
     }
     // Apply JSON patches, if there are any
     if (manifest.patches) {

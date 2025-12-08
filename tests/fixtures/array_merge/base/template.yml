@@ -1,0 +1,16 @@
+Resources:
+  Some:
+    Type: "AWS::Some::Resource"
+    Properties:
+      ArrayOne:
+        - one
+        - two
+      ArrayTwo:
+        - three
+        - four
+      Nested:
+        SubNested:
+          - name: subone
+            ArrayThree:
+              - five
+              - six

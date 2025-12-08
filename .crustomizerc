@@ -1,2 +1,2 @@
-lint: true 
+lint: true
 output: .generated

@@ -8,7 +8,33 @@
     "overlays": {
       "type": "array",
       "items": {
-        "type": "string"
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "Overlay path"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string",
+                "description": "Overlay path"
+              },
+              "arrayMerge": {
+                "type": "string",
+                "enum": [
+                  "append",
+                  "replace"
+                ]
+              }
+            },
+            "required": [
+              "file",
+              "arrayMerge"
+            ],
+            "additionalProperties": false
+          }
+        ]
       }
     },
     "stack": {
@@ -36,14 +62,19 @@
           }
         }
       },
-      "required": ["name"]
+      "required": [
+        "name"
+      ]
     },
     "params": {
       "type": "string"
     },
     "render": {
       "type": "string",
-      "enum": ["handlebars", "ejs"]
+      "enum": [
+        "handlebars",
+        "ejs"
+      ]
     },
     "profile": {
       "type": "string"
@@ -51,7 +82,10 @@
     "values": {
       "type": "object",
       "not": {
-        "required": ["base", "overlays"]
+        "required": [
+          "base",
+          "overlays"
+        ]
       }
     },
     "patches": {
@@ -61,17 +95,29 @@
         "properties": {
           "op": {
             "type": "string",
-            "enum": ["add", "remove", "replace", "move", "copy", "test"]
+            "enum": [
+              "add",
+              "remove",
+              "replace",
+              "move",
+              "copy",
+              "test"
+            ]
           },
           "path": {
             "type": "string"
           },
           "value": {}
         },
-        "required": ["op", "path"]
+        "required": [
+          "op",
+          "path"
+        ]
       }
     }
   },
-  "required": ["base"],
+  "required": [
+    "base"
+  ],
   "additionalProperties": false
 }

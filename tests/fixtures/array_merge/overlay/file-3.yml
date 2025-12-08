@@ -1,0 +1,11 @@
+Resources:
+  Some:
+    Type: "AWS::Some::Resource"
+    Properties:
+      Nested:
+        SubNested:
+          - name: subonesubone
+            somthing: else
+            ArrayFour:
+              - fivefive
+              - sixsix

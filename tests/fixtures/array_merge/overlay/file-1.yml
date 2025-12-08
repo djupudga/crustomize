@@ -1,0 +1,7 @@
+Resources:
+  Some:
+    Type: "AWS::Some::Resource"
+    Properties:
+      ArrayOne:
+        - oneone
+        - twotwo

@@ -6,5 +6,5 @@ Resources:
     Properties:
       BucketName: dd
       Tags:
-      - Key: Name
+      - Key: FqnName
         Value: !Sub "${AWS::StackName}-bucket"

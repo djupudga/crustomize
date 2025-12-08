@@ -10,9 +10,31 @@ type JsonPatch = {
   value?: any
 }
 
+export type ArrayMergeStrategy = "replace" | "append"
+
+type OverlayComplex = {
+  file: string
+  arrayMerge: ArrayMergeStrategy
+}
+
+type Overlay = string | OverlayComplex
+
+export type NormalizedOverlay = {
+  file: string
+  arrayMerge: "replace" | "append"
+}
+
+export function normalizeOverlay(overlay: Overlay): NormalizedOverlay {
+  if (typeof overlay === "string") {
+    return { file: overlay, arrayMerge: "append" }
+  } else {
+    return overlay
+  }
+}
+
 export type CrustomizeManifest = {
   base: string
-  overlays?: string[]
+  overlays?: Overlay[]
   params?: string
   render?: string
   profile?: string

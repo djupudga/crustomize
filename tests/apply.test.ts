@@ -28,7 +28,7 @@ Resources:
     Properties:
       BucketName: mybucket
       Tags:
-        - Key: Name
+        - Key: FqnName
           Value: !Sub \${AWS::StackName}-bucket
         - Key: Name
           Value: mybucket
@@ -45,6 +45,47 @@ Resources:
   `)
 })
 
+test("handles arrayMerge strategies", async () => {
+  const crustomizePath = "tests/fixtures/array_merge/overlay"
+  const flags = {
+    render: "handlebars",
+    env: "",
+    profile: "",
+  }
+  let results = ""
+  const old = console.log
+  try {
+    console.log = (r) => {
+      results = r
+    }
+    await apply(crustomizePath, flags)
+  } finally {
+    console.log = old
+  }
+  expect(results).toEqualIgnoringWhitespace(`
+Resources:
+  Some:
+    Type: AWS::Some::Resource
+    Properties:
+      ArrayOne:
+        - one
+        - two
+        - oneone
+        - twotwo
+      ArrayTwo:
+        - three
+        - four
+        - threethree
+        - fourfour
+      Nested:
+        SubNested:
+          - name: subonesubone
+            somthing: else
+            ArrayFour:
+              - fivefive
+              - sixsix
+`)
+})
 test("creates output directory if missing", async () => {
   const crustomizePath = "tests/fixtures/base_variant"
   const outputPath = "tests/tmp_output"

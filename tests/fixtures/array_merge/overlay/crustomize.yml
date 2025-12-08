@@ -1,0 +1,7 @@
+base: ../base
+overlays:
+  - file-1.yml
+  - file: ./file-2.yml
+    arrayMerge: append
+  - file: ./file-3.yml
+    arrayMerge: replace
