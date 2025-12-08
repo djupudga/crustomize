@@ -1,6 +1,6 @@
 import fs from "fs"
 import { getManifest } from "../manifest"
-import type { ApplyFunction } from "./types"
+import type { CommandFunction } from "./types"
 import { apply } from "./apply"
 import { runAwsCommand } from "../aws"
 import ora, { type Ora } from "ora"
@@ -9,8 +9,8 @@ import { hashFile } from "../file-hasher"
 import { cleanUpAwsFiles } from "../cleanup"
 import { firePostHooks, firePreHooks } from "../hooks"
 
-export const executeChangeSet: ApplyFunction = async (
-  crustomizePath,
+export const executeChangeSet: CommandFunction = async (
+  [crustomizePath],
   flags,
 ) => {
   let spinner: Ora | undefined
@@ -44,7 +44,7 @@ export const executeChangeSet: ApplyFunction = async (
       flags.output = "./.crustomize_deploy"
     }
 
-    const customResources = await apply(crustomizePath, flags)
+    const customResources = await apply([crustomizePath], flags)
 
     const hash = await hashFile(`${flags.output}/template.yml`)
 

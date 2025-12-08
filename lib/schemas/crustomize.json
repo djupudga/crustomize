@@ -2,6 +2,13 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "vars": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Variable"
+      }
+    },
     "base": {
       "type": "string"
     },
@@ -24,7 +31,9 @@
                 "type": "string",
                 "enum": [
                   "append",
-                  "replace"
+                  "replace",
+                  "prepend",
+                  "crustomize"
                 ]
               }
             },

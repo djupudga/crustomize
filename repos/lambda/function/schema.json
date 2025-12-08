@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lambda Function Service",
+  "description": "Schema for a Lambda function service manifest",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "const": "lambda/function"
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the Lambda function."
+    },
+    "def": {
+      "type": "object",
+      "description": "The service definition.",
+      "properties": {
+        "memorySize": {
+          "type": "number",
+          "description": "The memory size for the Lambda function.",
+          "default": 256
+        },
+        "timeout": {
+          "type": "number",
+          "description": "The timeout for the Lambda function in seconds.",
+          "default": 30
+        },
+        "runtime": {
+          "type": "string",
+          "description": "The runtime for the Lambda function.",
+          "default": "nodejs20.x"
+        },
+        "handler": {
+          "type": "string",
+          "description": "The handler for the Lambda function.",
+          "default": "index.handler"
+        },
+        "environment": {
+          "type": "object",
+          "description": "Environment variables for the Lambda function.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "logging": {
+          "type": "object",
+          "properties": {
+            "retentionInDays": {
+              "type": "number",
+              "description": "The retention period for the log group in days."
+            }
+          }
+        },
+        "vpcConfig": {
+          "type": "object",
+          "properties": {
+            "subnetIds": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "securityGroupIds": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "required": ["subnetIds", "securityGroupIds"]
+        },
+        "monitoring": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "Enable CloudWatch alarms for monitoring."
+            }
+          }
+        }
+      },
+      "required": []
+    }
+  },
+  "required": ["type", "name", "def"]
+}

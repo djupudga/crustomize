@@ -16,7 +16,7 @@ test("crustomize a path", async () => {
     console.log = (r) => {
       results = r
     }
-    await apply(crustomizePath, flags)
+    await apply([crustomizePath], flags)
   } finally {
     console.log = old
   }
@@ -58,7 +58,7 @@ test("handles arrayMerge strategies", async () => {
     console.log = (r) => {
       results = r
     }
-    await apply(crustomizePath, flags)
+    await apply([crustomizePath], flags)
   } finally {
     console.log = old
   }
@@ -86,6 +86,7 @@ Resources:
               - sixsix
 `)
 })
+
 test("creates output directory if missing", async () => {
   const crustomizePath = "tests/fixtures/base_variant"
   const outputPath = "tests/tmp_output"
@@ -96,7 +97,7 @@ test("creates output directory if missing", async () => {
     profile: "",
     output: outputPath,
   }
-  await apply(crustomizePath, flags)
+  await apply([crustomizePath], flags)
   expect(fs.existsSync(path.join(outputPath, "template.yml"))).toBe(true)
   fs.rmSync(outputPath, { recursive: true, force: true })
 })
@@ -113,7 +114,7 @@ test("manifest values override flags", async () => {
     console.log = (r) => {
       results = r
     }
-    await apply(crustomizePath, flags)
+    await apply([crustomizePath], flags)
   } finally {
     console.log = old
   }

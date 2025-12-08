@@ -1,6 +1,6 @@
 import fs from "fs"
 import { getManifest } from "../manifest"
-import type { ApplyFunction } from "./types"
+import type { CommandFunction } from "./types"
 import { apply } from "./apply"
 import { runAwsCommand } from "../aws"
 import ora, { type Ora } from "ora"
@@ -8,7 +8,7 @@ import { handleError } from "../errors"
 import { hashFile } from "../file-hasher"
 import { cleanUpAwsFiles } from "../cleanup"
 
-export const deleteChangeSet: ApplyFunction = async (crustomizePath, flags) => {
+export const deleteChangeSet: CommandFunction = async ([crustomizePath], flags) => {
   let spinner: Ora | undefined
   if (!flags.ci) {
     spinner = ora("Deleting CloudFormation change set...").start()
@@ -40,7 +40,7 @@ export const deleteChangeSet: ApplyFunction = async (crustomizePath, flags) => {
       flags.output = "./.crustomize_deploy"
     }
 
-    await apply(crustomizePath, flags)
+    await apply([crustomizePath], flags)
 
     const hash = await hashFile(`${flags.output}/template.yml`)
 

@@ -1,0 +1,12 @@
+vars:
+  app: my-app
+  stage: test
+base: ../base
+stack:
+  name: ${app}-${stage}
+  tags:
+    Name: ${app}-${stage}
+    Environment: ${stage}
+    App: ${app}
+values:
+  Stage: ${stage}

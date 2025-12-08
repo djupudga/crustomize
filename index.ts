@@ -19,6 +19,14 @@ const cli = meow(
     execute-change-set Executes a CloudFormation change set
     delete-change-set  Deletes a CloudFormation change set
     validate           Validates the generated template
+    config             Sets/deletes a value in the crustomize config
+    repo               Repository related commands
+
+  Sub-commands:
+    config set [location] [key] [value]    Sets a config value
+    config delete [location] [key]         Deletes a config value
+    config show [location]                 Shows config values
+
   Parameters:
     <path> Path to overlay folder
   Options
@@ -105,7 +113,7 @@ const cli = meow(
   },
 )
 
-const [command, path] = cli.input
+const [command, ...args] = cli.input
 
 type CommandName = keyof typeof commands
 
@@ -123,9 +131,9 @@ if (command == undefined) {
 }
 
 if (isCommand(command)) {
-  if (path) {
+  if (args.length > 0) {
     const flags = applyConfig(cli.flags)
-    await commands[command](path, flags)
+    await commands[command](args, flags)
   } else {
     cli.showHelp()
   }

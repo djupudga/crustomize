@@ -1,6 +1,6 @@
 import fs from "fs"
 import { getManifest } from "../manifest"
-import type { ApplyFunction } from "./types"
+import type { CommandFunction } from "./types"
 import { apply } from "./apply"
 import { runAwsCommand } from "../aws"
 import ora, { type Ora } from "ora"
@@ -22,7 +22,7 @@ function stackExists(stackName: string, profile?: string): boolean {
   }
 }
 
-export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
+export const createChangeSet: CommandFunction = async ([crustomizePath], flags) => {
   let spinner: Ora | undefined
   if (!flags.ci) {
     spinner = ora("Creating CloudFormation change set...").start()
@@ -52,7 +52,7 @@ export const createChangeSet: ApplyFunction = async (crustomizePath, flags) => {
       flags.output = "./.crustomize_deploy"
     }
 
-    await apply(crustomizePath, flags)
+    await apply([crustomizePath], flags)
 
     const hash = await hashFile(`${flags.output}/template.yml`)
 

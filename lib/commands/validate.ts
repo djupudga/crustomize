@@ -5,10 +5,10 @@ import { runAwsCommand } from "../aws"
 import { lint } from "../lint"
 import { handleError } from "../errors"
 import { cleanUpAwsFiles } from "../cleanup"
-import type { ApplyFunction } from "./types.d"
+import type { CommandFunction } from "./types.d"
 import { getManifest } from "../manifest"
 
-export const validate: ApplyFunction = async (crustomizePath, flags) => {
+export const validate: CommandFunction = async ([crustomizePath], flags) => {
   try {
     if (crustomizePath.endsWith("/")) {
       crustomizePath = crustomizePath.slice(0, -1)
@@ -21,7 +21,7 @@ export const validate: ApplyFunction = async (crustomizePath, flags) => {
     }
 
     const applyFlags = { ...flags, lint: false }
-    await apply(crustomizePath, applyFlags)
+    await apply([crustomizePath], applyFlags)
 
     const args = [
       "cloudformation",

@@ -1,2 +1,1 @@
-lint: true
-output: .generated
+lint: false

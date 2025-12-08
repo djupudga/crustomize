@@ -5,7 +5,7 @@ import { yamlDump, yamlParse } from "yaml-cfn"
 import { processYaml } from "../process"
 import deepmerge from "deepmerge"
 import { lint, lintStdin } from "../lint"
-import type { ApplyFunction, Flags } from "./types.d"
+import type { CommandFunction, Flags } from "./types.d"
 import { getManifest, normalizeOverlay, type ArrayMergeStrategy, type NormalizedOverlay } from "../manifest"
 import {
   S3Client,
@@ -84,8 +84,8 @@ async function getBaseFiles(
   }
 }
 
-export const apply: ApplyFunction<Record<string, any>> = async (
-  crustomizePath,
+export const apply: CommandFunction<Record<string, any>> = async (
+  [crustomizePath],
   flags,
 ) => {
   if (crustomizePath.endsWith("/")) {

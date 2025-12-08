@@ -24,7 +24,7 @@ test("fires pre/post hooks", async () => {
     }
   })
   // Excercise
-  await deploy(crustomizePath, flags)
+  await deploy([crustomizePath], flags)
   // Verify
   expect(preHookResults).toBeDefined()
   expect(postHookResults).toBeDefined()

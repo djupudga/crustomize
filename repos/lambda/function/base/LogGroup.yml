@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Base Log Group for Lambda Function
+
+Resources:
+  LambdaLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/<%= FunctionName %>
+      RetentionInDays: <%= LogRetentionInDays %>
+
+Outputs:
+  LogGroupName:
+    Description: Name of the CloudWatch Log Group
+    Value: !Ref LambdaLogGroup

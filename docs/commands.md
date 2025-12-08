@@ -159,3 +159,34 @@ crustomize generate path/to/manifest.yml -r path/to/repo/folder
 # Repo on S3
 crustomize generate path/to/manifest.yml -r s3://bucket/repo
 ```
+
+### config
+
+Crustomize can be configured using a `.crustomizerc` file in YAML format.
+This file can be placed in the same folder where you run Crustomize
+or in your home folder (`~/.crustomizerc`).
+
+The `config` command allows you to set, show or delete this configuration.
+If a `.crustomizerc` file does not exist, it will be created when you set
+a configuration value.
+
+When using this command, the location is provided using the `location`
+sub-command, which is either `local` or `global` (home folder).
+The locoation is followed by the actual command (`set`, `delete` or `show`)
+and any relevant parameters.
+
+**Examples:**
+
+```bash
+# Set a local configuration value
+crustomize config local set output ./out_folder
+# Set a global configuration value
+crustomize config global set render handlebars
+# Show local configuration
+crustomize config local show
+# Show global configuration
+crustomize config global show
+# Delete a local configuration value
+crustomize config local delete output
+```
+

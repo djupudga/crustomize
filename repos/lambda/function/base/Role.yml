@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Base IAM Role for Lambda Function
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AWS::StackName}-ExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+Outputs:
+  RoleArn:
+    Description: ARN of the Lambda Execution Role
+    Value: !GetAtt LambdaExecutionRole.Arn
+  RoleName:
+    Description: Name of the Lambda Execution Role
+    Value: !Ref LambdaExecutionRole

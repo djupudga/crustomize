@@ -76,6 +76,23 @@ Resources:
 Verify by running `crustomize apply crustomize/overlays/prod`. There should
 now be a different description.
 
+### Overlay array merging strategies
+
+When merging overlays, arrays are simply merged, i.e. items from both
+arrays are included in the resulting template. However, sometimes you
+may want to replace an entire array instead of merging it. To do this,
+you can specify an `arrayMerge` strategy in the overlay definition,
+like this:
+
+```yml
+base: ../../
+overlays:
+  - file: ECSTaskExecutionRole.yml
+    arrayMerge: replace
+```
+
+For more complex merging strategies, use JSON patch as described below.
+
 ## Step 3: JSON Patch
 
 Sometimes overlays are not enough, particularly when you need to target

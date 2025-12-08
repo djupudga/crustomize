@@ -20,6 +20,24 @@ test("loads a good manifest", () => {
   })
 })
 
+test("expands vars in manifest", () => {
+  const manifest = getManifest("tests/fixtures/vars_manifest")
+  expect(manifest).toEqual({
+    base: "../base",
+    stack: {
+      name: "my-app-test",
+      tags: {
+        Name: "my-app-test",
+        Environment: "test",
+        App: "my-app",
+      },
+    },
+    values: {
+      Stage: "test",
+    },
+  })
+})
+
 test("loads a manifest with complex overlays", () => {
   const manifest = getManifest("tests/fixtures/complex_manifest")
   expect(manifest).toEqual({

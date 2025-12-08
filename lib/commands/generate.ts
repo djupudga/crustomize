@@ -1,6 +1,6 @@
 import { yamlParse } from "yaml-cfn"
 import crustomizeSchema from "../schemas/crustomize.json"
-import type { ApplyFunction, Flags } from "./types"
+import type { CommandFunction, Flags } from "./types"
 import fs from "fs"
 import { processYaml } from "../process"
 import Ajv from "ajv"
@@ -49,7 +49,7 @@ function downloadFromS3(s3Url: string, localDir: string, flags: Flags) {
   runAwsCommand(args)
 }
 
-export const generate: ApplyFunction = async (path, flags) => {
+export const generate: CommandFunction = async ([path], flags) => {
   validatePath(path)
   // Load app generation
   const fileStr = fs.readFileSync(path, "utf8").toString()
@@ -108,7 +108,7 @@ export const generate: ApplyFunction = async (path, flags) => {
       processedManifest,
       "utf8",
     )
-    await apply(`${repo}/${type}`, flags)
+    await apply([`${repo}/${type}`], flags)
   } finally {
     fs.unlinkSync(`${repo}/${type}/crustomize.yml`)
   }

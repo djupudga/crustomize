@@ -11,4 +11,4 @@ export type Flags = {
   hooks?: string
 }
 
-export type ApplyFunction<R = void> = (path: string, flags: Flags) => Promise<R>
+export type CommandFunction<R = void> = (args: string[], flags: Flags) => Promise<R>

@@ -47,6 +47,34 @@ export type CrustomizeManifest = {
   patches?: JsonPatch[]
 }
 
+function traverseAndExpand(obj: any, vars: Record<string, string>): any {
+  if (typeof obj === "string") {
+    let result = obj
+    for (const [key, value] of Object.entries(vars)) {
+      const varPattern = new RegExp(`\\$\\{${key}\\}`, "g")
+      result = result.replace(varPattern, value)
+    }
+    return result
+  } else if (Array.isArray(obj)) {
+    return obj.map((item) => traverseAndExpand(item, vars))
+  } else if (typeof obj === "object" && obj !== null) {
+    const newObj: any = {}
+    for (const [key, value] of Object.entries(obj)) {
+      newObj[key] = traverseAndExpand(value, vars)
+    }
+    return newObj
+  } else {
+    return obj
+  }
+}
+
+function expandVars(obj: any): any {
+  const vars = obj["vars"] || {}
+  let results = traverseAndExpand(obj, vars)
+  delete results["vars"]
+  return results
+}
+
 let cached: Record<string, any> = {}
 
 /**
@@ -62,7 +90,7 @@ export function getManifest(crustomizePath: string): CrustomizeManifest {
       process.exit(1)
     }
     const manifestFile = fs.readFileSync(manifestFilePath, "utf8").toString()
-    cached[manifestFilePath] = yamlParse(manifestFile) as CrustomizeManifest
+    cached[manifestFilePath] = expandVars(yamlParse(manifestFile) as CrustomizeManifest)
     const ajv = new Ajv()
     const validate = ajv.compile(crustomizeSchema)
     const valid = validate(cached[manifestFilePath])

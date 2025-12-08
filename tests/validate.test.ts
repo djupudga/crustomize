@@ -18,7 +18,7 @@ test("validate prints aws output", async () => {
     output += msg
   }
   try {
-    await validate("tests/fixtures/base_variant", flags)
+    await validate(["tests/fixtures/base_variant"], flags)
   } finally {
     console.log = oldLog
   }
@@ -40,7 +40,7 @@ test("validate reports aws errors", async () => {
     throw new Error(`exit ${code}`)
   }) as any
   expect(
-    validate("tests/fixtures/manifest_with_bad_base", flags),
+    validate(["tests/fixtures/manifest_with_bad_base"], flags),
   ).rejects.toThrow()
   console.error = oldError
   process.exit = oldExit

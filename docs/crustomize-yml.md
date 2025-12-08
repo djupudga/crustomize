@@ -1,10 +1,16 @@
 # `crustomize.yml` file
 
-Each variant directory contains a **crustomize.yml** manifest describing how to build
+Each overlay directory contains a **crustomize.yml** manifest describing how to build
 your templates. All fields are optional except `base`. If `render` or `profile` are
 specified, they override the corresponding command line flags.
 
+The manifest supports variable expansion using the `${var}` syntax. Variables
+are defined in the `vars` section of the manifest only and are not available in
+templates.
+
 ```yaml
+vars:
+  env: dev
 base: ../base
 render: ejs
 profile: my-aws-profile
@@ -13,12 +19,15 @@ stack:
   capabilities:
     - CAPABILITY_NAMED_IAM
   tags:
-    Environment: dev
+    Environment: ${env}
 params: ./params.yml
 overlays:
   - ./Template.yml
+  - file: ./another-overlay.yml
+    arrayMerge: replace
 values:
-  Foo: true
+  Stage: ${env}
+  Enabled: true
 patches:
   - op: replace
     path: "/Resources/Path/To/Array/0/Property"
@@ -29,6 +38,7 @@ patches:
 
 | Field      | Description                                                           |
 | ---------- | --------------------------------------------------------------------- |
+| `vars`     | Variables that are expanded in the `crustomize.yml` manifest only.    |
 | `base`     | Path to the directory containing base templates.                      |
 | `overlays` | List of overlay files to merge with the base templates.               |
 | `params`   | Path to a `params.yml` file converted to JSON when applying.          |
@@ -45,13 +55,48 @@ patches:
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "vars": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Variable"
+      }
+    },
     "base": {
       "type": "string"
     },
     "overlays": {
       "type": "array",
       "items": {
-        "type": "string"
+        "oneOf": [
+          {
+            "type": "string",
+            "description": "Overlay path"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "file": {
+                "type": "string",
+                "description": "Overlay path"
+              },
+              "arrayMerge": {
+                "type": "string",
+                "enum": [
+                  "append",
+                  "replace",
+                  "prepend",
+                  "crustomize"
+                ]
+              }
+            },
+            "required": [
+              "file",
+              "arrayMerge"
+            ],
+            "additionalProperties": false
+          }
+        ]
       }
     },
     "stack": {
@@ -79,14 +124,19 @@ patches:
           }
         }
       },
-      "required": ["name"]
+      "required": [
+        "name"
+      ]
     },
     "params": {
       "type": "string"
     },
     "render": {
       "type": "string",
-      "enum": ["handlebars", "ejs"]
+      "enum": [
+        "handlebars",
+        "ejs"
+      ]
     },
     "profile": {
       "type": "string"
@@ -94,7 +144,10 @@ patches:
     "values": {
       "type": "object",
       "not": {
-        "required": ["base", "overlays"]
+        "required": [
+          "base",
+          "overlays"
+        ]
       }
     },
     "patches": {
@@ -104,18 +157,30 @@ patches:
         "properties": {
           "op": {
             "type": "string",
-            "enum": ["add", "remove", "replace", "move", "copy", "test"]
+            "enum": [
+              "add",
+              "remove",
+              "replace",
+              "move",
+              "copy",
+              "test"
+            ]
           },
           "path": {
             "type": "string"
           },
           "value": {}
         },
-        "required": ["op", "path"]
+        "required": [
+          "op",
+          "path"
+        ]
       }
     }
   },
-  "required": ["base"],
+  "required": [
+    "base"
+  ],
   "additionalProperties": false
 }
 ```
