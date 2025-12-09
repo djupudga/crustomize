@@ -1,4 +1,4 @@
-base: ../base
+base: ./base
 stack:
   name: {{values.name}}
   capabilities:
