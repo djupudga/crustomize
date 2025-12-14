@@ -1,4 +1,5 @@
 import fs from "fs"
+import os from "os"
 import path from "path"
 import { handleError } from "../errors"
 import { yamlDump, yamlParse } from "yaml-cfn"
@@ -13,6 +14,7 @@ import {
   ListObjectsV2Command,
 } from "@aws-sdk/client-s3"
 import { jsonpatch } from "json-p3"
+import { run } from "../run"
 
 type BaseFiles = Record<string, any>
 type OverlayFiles = Record<string, any>
@@ -55,6 +57,43 @@ async function getS3Files(
   return files
 }
 
+async function getGitFiles(
+  base: string,
+  // crustomizePath: string,
+  flags: Flags,
+  values: Record<string, any>,
+  stack?: Record<string, any>,
+): Promise<BaseFiles> {
+  // path format: git@service:org/repo.git#sub/path?branchOrTag
+  const gitRepo = base.split("#")[0]
+  const parts = base.split("#")[1].split("?") || ""
+  const gitPath = parts[0] || ""
+  const tagOrBranch = parts[1] || ""
+  const git = run.bind(null, "git")
+  // Clone to a temp directory
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "crustomize-"))
+  git(["clone", "--no-checkout", gitRepo, tempDir])
+  git(["-C", tempDir, "sparse-checkout", "init", "--cone"])
+  git(["-C", tempDir, "sparse-checkout", "set", gitPath])
+  if (tagOrBranch) {
+    git(["-C", tempDir, "checkout", tagOrBranch])
+  } else {
+    git(["-C", tempDir, "checkout"])
+  }
+  const basePath = path.resolve(tempDir, "base")
+  const baseFileNames = fs.readdirSync(basePath).filter(ymlFilter)
+  const baseFiles = baseFileNames.reduce<BaseFiles>((acc, fileName) => {
+    const filePath = `${basePath}/${fileName}`
+    if (!fs.lstatSync(filePath).isFile()) return acc
+
+    const fileStr = fs.readFileSync(filePath, "utf8").toString()
+    const file = processYaml(fileStr, values, flags, basePath, stack)
+    acc[fileName] = yamlParse(file) || {}
+    return acc
+  }, {})
+  return baseFiles
+}
+
 function ymlFilter(fileName: string): boolean {
   return fileName.endsWith(".yaml") || fileName.endsWith(".yml")
 }
@@ -68,6 +107,8 @@ async function getBaseFiles(
 ): Promise<BaseFiles> {
   if (base.startsWith("s3://")) {
     return getS3Files(base, flags, values, stack)
+  } else if (base.startsWith("git@")) {
+    return getGitFiles(base, /*crustomizePath,*/ flags, values, stack)
   } else {
     const basePath = path.resolve(crustomizePath, base)
     const baseFileNames = fs.readdirSync(basePath).filter(ymlFilter)

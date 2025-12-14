@@ -1,10 +1,15 @@
 import { yamlDump, yamlParse } from "yaml-cfn";
 import type { CommandFunction, Flags } from "./types";
 import fs from "fs"
-import { toCorrectType, validKeys } from "../config";
+import { getCrustomizeRcFor, toCorrectType, validKeys } from "../config";
 
 
 export const config: CommandFunction = async ([command, location, key, value], flags) => {
+  if (!value) {
+    value = key
+    key = location
+    location = "local"
+  }
   switch (command) {
     case "delete":
       return deleteCmd([location, key], flags)
@@ -17,38 +22,19 @@ export const config: CommandFunction = async ([command, location, key, value], f
   }
 }
 
-const validLocations = ["global", "local"]
-
-function getCrustomizeRcFor(location: string) {
-  if (!validLocations.includes(location)) {
-    throw new Error(`Invalid location "${location}". Valid locations are: ${validLocations.join(", ")}`)
-  }
-  if (location === "global") {
-    const homeDir = process.env["HOME"]
-    return `${homeDir}/.crustomizerc`
-  } else {
-    return ".crustomizerc"
-  }
-}
-
 const show: CommandFunction = async ([location], _flags) => {
-  if (!location) {
-    throw new Error("Location must be provided: show <location>")
-  }
-
   const rcPath = getCrustomizeRcFor(location)
   if (!fs.existsSync(rcPath)) {
     throw new Error(`No config file found at location: ${rcPath}`)
   }
   const file = fs.readFileSync(rcPath, "utf8").toString()
-  // const cfg = yamlParse(file) as Record<string, any>
   console.log(file)
   return
 }
 
 const deleteCmd: CommandFunction = async ([location, key], _flags) => {
-  if (!location || !key) {
-    throw new Error("Location and key must be provided: delete <location> <key>")
+  if (!key) {
+    throw new Error("key must be provided: delete [location] <key>")
   }
 
   if (!validKeys.includes(key as keyof Flags)) {
@@ -67,8 +53,11 @@ const deleteCmd: CommandFunction = async ([location, key], _flags) => {
 }
 
 const set: CommandFunction = async ([location, key, value], _flags) => {
-  if (!location || !key || !value) {
-    throw new Error("Location,  key and value must be provided: set <location> <key> <value>")
+  if (!key) {
+    throw new Error("key must be provided: set [location] <key> <value>")
+  }
+  if (!value) {
+    throw new Error("value must be provided: set [location] <key> <value>")
   }
 
   if (!validKeys.includes(key as keyof Flags)) {

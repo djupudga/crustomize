@@ -24,6 +24,20 @@ export function toCorrectType(value: string): string | boolean {
   }
 }
 
+export function getCrustomizeRcFor(location: string) {
+  if (!validLocations.includes(location)) {
+    throw new Error(`Invalid location "${location}". Valid locations are: ${validLocations.join(", ")}`)
+  }
+  if (location === "global") {
+    const homeDir = process.env["HOME"]
+    return `${homeDir}/.crustomizerc`
+  } else {
+    return ".crustomizerc"
+  }
+}
+
+export const validLocations = ["global", "local"]
+
 function findConfigFile(): string {
   const localPath = path.resolve(process.cwd(), ".crustomizerc")
   if (fs.existsSync(localPath)) {
@@ -54,7 +68,9 @@ export function applyConfig(flags: Flags): Flags {
             `Error reading .crustomizerc - unknown config key: ${key}`,
           )
         }
-        copy[key as keyof Flags] = value
+        if (!(copy[key as keyof Flags])) {
+          copy[key as keyof Flags] = value
+        }
       }
     } catch (e) {
       console.error(`Unable to load config file: ${configPath}`)

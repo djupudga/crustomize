@@ -7,6 +7,7 @@ import { deleteChangeSet } from "./delete-change-set"
 import { validate } from "./validate"
 import { generate } from "./generate"
 import { config } from "./config"
+import { repo } from "./repo"
 
 type Commands = {
   apply: CommandFunction<Record<string, any>> // deprecated
@@ -18,6 +19,7 @@ type Commands = {
   validate: CommandFunction
   generate: CommandFunction
   config: CommandFunction
+  repo: CommandFunction
 }
 
 export const commands: Commands = {
@@ -30,4 +32,5 @@ export const commands: Commands = {
   validate,
   generate,
   config,
+  repo,
 }

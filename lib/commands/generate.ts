@@ -80,7 +80,7 @@ export const generate: CommandFunction = async ([path], flags) => {
   const validateYaml = ajv.compile(genSchema)
   const validYaml = validateYaml(genYamlData)
   if (!validYaml) {
-    const e = new AjvValidationError(validateYaml.errors)
+    const e = new AjvValidationError("Manifest validation error", validateYaml.errors)
     console.error(e.message)
     console.error(JSON.stringify(validateYaml.errors, null, 2))
     process.exit(1)
@@ -96,7 +96,7 @@ export const generate: CommandFunction = async ([path], flags) => {
   const validateManifest = ajv.compile(crustomizeSchema)
   const valid = validateManifest(manifestData)
   if (!valid) {
-    const e = new AjvValidationError(validateManifest.errors)
+    const e = new AjvValidationError("Validation failed for crustomize.yml", validateManifest.errors)
     console.error(e.message)
     console.error(JSON.stringify(validateManifest.errors, null, 2))
     process.exit(1)

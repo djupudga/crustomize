@@ -13,26 +13,17 @@ export class CrustomizeError extends Error {
 export class AjvValidationError extends Error {
   public readonly errors: ErrorObject[] | null | undefined
 
-  constructor(errors: ErrorObject[] | null | undefined) {
-    // Build a detailed error message using the static formatter.
+  constructor(msg: string, errors: ErrorObject[] | null | undefined) {
     const message =
       errors == null
-        ? "validation error"
+        ? "Validation error"
         : AjvValidationError.formatErrors(errors)
-    super(message)
 
-    // Set the errors array as a property on this instance.
+    super(`${msg}\n${message}`)
     this.errors = errors
-
-    // Restore the prototype chain (necessary when extending built-in types).
     Object.setPrototypeOf(this, AjvValidationError.prototype)
   }
 
-  /**
-   * Format AJV errors into a human readable message.
-   * @param errors Array of AJV ErrorObjects.
-   * @returns A string with each error on a new line.
-   */
   private static formatErrors(errors: ErrorObject[]): string {
     if (!errors || errors.length === 0) {
       return "Unknown validation error."
@@ -40,12 +31,47 @@ export class AjvValidationError extends Error {
 
     return errors
       .map((err, index) => {
-        // Use instancePath if available (AJV v7+), otherwise fallback to dataPath.
-        const path = err.instancePath || ""
-        // Format the message; trim in case path is empty.
-        return `${index + 1}: "${path}" ${err.message}`.trim()
+        const path = AjvValidationError.cleanPath(err.instancePath)
+
+        switch (err.keyword) {
+          case "enum":
+            return `${index + 1}: ${path} must be one of: ${err.params["allowedValues"].join(", ")}`
+
+          case "type":
+            return `${index + 1}: ${path} must be of type ${err.params["type"]}`
+
+          case "required":
+            return `${index + 1}: Missing required property '${err.params["missingProperty"]}' at ${path || "(root)"}`
+
+          case "additionalProperties":
+            return `${index + 1}: ${path} has unknown property '${err.params["additionalProperty"]}'`
+
+          case "minimum":
+          case "maximum":
+            return `${index + 1}: ${path} ${err.message}`
+
+          case "pattern":
+            return `${index + 1}: ${path} must match pattern: ${err.params["pattern"]}`
+
+          case "const":
+            return `${index + 1}: ${path} must be exactly: ${JSON.stringify(err.params["allowedValue"])}`
+
+          case "errorMessage": // from ajv-errors extension
+            return `${index + 1}: ${path} ${err.message}`
+
+          default:
+            return `${index + 1}: ${path} ${err.message}`
+        }
       })
       .join("\n")
+  }
+
+  private static cleanPath(path: string): string {
+    if (!path) return ""
+    return path
+      .replace(/^\//, "")
+      .replace(/\//g, ".")
+      .replace(/^values\./, "values.")
   }
 }
 

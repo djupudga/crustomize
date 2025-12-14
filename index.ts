@@ -13,7 +13,7 @@ const cli = meow(
 
   Commands:
     apply              Applies overlays to a base file
-    generate           Generates a CloudFormation template
+    generate           Generates a CloudFormation template (experimental)
     deploy             Deploys a CloudFormation stack
     create-change-set  Creates a CloudFormation change set
     execute-change-set Executes a CloudFormation change set
@@ -23,9 +23,15 @@ const cli = meow(
     repo               Repository related commands
 
   Sub-commands:
+    Config commands:
     config set [location] [key] [value]    Sets a config value
     config delete [location] [key]         Deletes a config value
     config show [location]                 Shows config values
+
+    Repo commands:
+    repo install       Install/update bases defined in pkg.yml file
+    repo list          List availble remote bases
+    repo show [name]   Show details of a remote base
 
   Parameters:
     <path> Path to overlay folder

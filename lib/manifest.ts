@@ -83,7 +83,7 @@ let cached: Record<string, any> = {}
  * @returns The crustomize manifest.
  */
 export function getManifest(crustomizePath: string): CrustomizeManifest {
-  const manifestFilePath = `${crustomizePath}/crustomize.yml`
+  const manifestFilePath = normalizeManifestPath(crustomizePath)
   if (!cached[manifestFilePath]) {
     if (!fs.existsSync(manifestFilePath)) {
       console.error(`Manifest file not found: ${manifestFilePath}`)
@@ -95,8 +95,38 @@ export function getManifest(crustomizePath: string): CrustomizeManifest {
     const validate = ajv.compile(crustomizeSchema)
     const valid = validate(cached[manifestFilePath])
     if (!valid) {
-      throw new AjvValidationError(validate.errors)
+      throw new AjvValidationError("Failed to validate crustomize.yml", validate.errors)
+    }
+    // Basic structure has been validated. Now we check if there is a
+    // path/to/base/.meta/values-schema.json file and validate the values
+    // against it.
+    const basePath = `${crustomizePath}/${cached[manifestFilePath].base}`
+    const valuesSchemaPath = `${basePath}/.meta/values-schema.json`
+    if (fs.existsSync(valuesSchemaPath)) {
+      const valuesSchemaFile = fs.readFileSync(valuesSchemaPath, "utf8").toString()
+      const valuesSchema = JSON.parse(valuesSchemaFile)
+      const validateValues = ajv.compile(valuesSchema)
+      const validValues = validateValues(cached[manifestFilePath].values)
+      if (!validValues) {
+      
+        throw new AjvValidationError("Incorrect 'values' in crustomize.yml", validateValues.errors)
+      }
     }
   }
   return cached[manifestFilePath]
+}
+
+/**
+ * Normalize the manifest path to ensure it points to crustomize.yml
+ * @param crustomizePath The path to the crustomize directory or manifest file.
+ * @returns The normalized path to crustomize.yml
+ */
+function normalizeManifestPath(crustomizePath: string): string {
+  if (crustomizePath.endsWith("crustomize.yml")) {
+    return crustomizePath
+  } else if (crustomizePath.endsWith("/")) {
+    return `${crustomizePath}crustomize.yml`
+  } else {
+    return `${crustomizePath}/crustomize.yml`
+  }
 }
