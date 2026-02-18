@@ -27,7 +27,7 @@ The parameters and values the outer function receives are:
   around nodejs `spawnSync` function.
 
 Crustomize will look for a folder in the
-working directory called `crustomiez_helpers` and import all `.js` files. Any
+working directory called `crustomize_helpers` and import all `.js` files. Any
 exported function is now available as a helper. You can override the
 folder location using the `--helpers/-H` switch.
 

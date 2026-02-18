@@ -15,6 +15,7 @@ The hook will receive two parameters: `event` and
 will contain the custom resource as an Object.
 
 Example resource:
+
 ```yaml
 Resources:
   MyCustomResource:
@@ -24,6 +25,7 @@ Resources:
 ```
 
 Example hook:
+
 ```JavaScript
 export function functionName(event, resource) {
   if (event == "pre") {
@@ -35,14 +37,15 @@ export function functionName(event, resource) {
 The hooks are registered similarly to how helpers
 are registered:
 
-- cli clag (--hooks/-K)
-- Colon separated in an evironment variable: `CRUSTOMIZE_HOOKS`
+- cli flag (--hooks/-K)
+- Colon separated in an environment variable: `CRUSTOMIZE_HOOKS`
 - Folder (`crustomize_hooks`)
 
-Since Cruztomize is based on Bun, your hooks can
+Since Crustomize is based on Bun, your hooks can
 call the `require` function to load dependencies.
 
 Practical applications of hooks are amongst others:
+
 - Upload files to an S3 bucket
 - Issue commands via the AWS CLI
 - Update a database

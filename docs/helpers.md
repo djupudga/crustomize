@@ -6,7 +6,7 @@ that are built into the respective Template Rendering Engine.
 
 In addition to built in helpers, you can define your own helper
 functions in JavaScript. Crustomize will look for a folder in the
-working directory called `crustomiez_helpers` and import all `.js` files. Any
+working directory called `crustomize_helpers` and import all `.js` files. Any
 exported function is now available as a helper. You can override the
 folder location using the `--helpers/-H` switch.
 

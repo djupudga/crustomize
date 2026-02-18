@@ -24,6 +24,7 @@ Crustomize supports the following options:
     --lint, -l      Lint the output file (requires cfn-lint)
     --env, -e       Environment file
     --helpers, -H   Path(s) to colon separated custom helpers file or folder
+    --hooks, -K     Path(s) to colon separated hooks file or folder
     --help, -h      Show help
     --version, -v   Show version
     --ci, -i        CI/CD mode
@@ -135,7 +136,7 @@ crustomize validate path/to/overlay -o folder
 crustomize validate path/to/overlay --lint
 ```
 
-## generate
+### generate
 
 Generates a CloudFormation template from a custom manifest file.
 
@@ -189,4 +190,3 @@ crustomize config global show
 # Delete a local configuration value
 crustomize config local delete output
 ```
-

@@ -51,7 +51,7 @@ the overlay.
 Add the overlay to `crustomize.yml` like this:
 
 ```yml
-base: ../../
+base: ../../base
 overlays:
   - ECSTaskExecutionRole.yml
 ```
@@ -217,14 +217,14 @@ function, like this:
 //   wd: String: This is the folder of the current overlay/crustomize.yml
 //       i.e. /path/to/overlay folder
 //   profile: AWS_PROFILE, default is 'default'
-//   bin: function that runs a shell process
+//   run: function that runs a shell process
 export function cat({ wd, profile, run }) {
   return function (filename) {
-    const cat = bin.bind("cat")
+    const cat = run.bind("cat")
     return cat([filename])
   }
 }
 ```
 
-One possible use case is to bind `bin` to the `aws` CLI in order to perfom
+One possible use case is to bind `run` to the `aws` CLI in order to perform
 lookup operations against resources in AWS.

@@ -53,6 +53,7 @@ setup.
 - [Deploying to AWS](deploying-to-aws.md)
 - [Service Catalog and vendoring](generate.md)
 - [Custom resources using hooks](custom-resources.md)
+- [Custom helpers](custom-helpers.md)
 - References
   - [Command line reference](commands.md)
   - [crustomize.yml file](crustomize-yml.md)
