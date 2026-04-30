@@ -5,6 +5,8 @@ import type { Flags } from "./commands/types.d"
 
 export const validKeys = [
   "env",
+  "helpers",
+  "hooks",
   "lint",
   "output",
   "profile",

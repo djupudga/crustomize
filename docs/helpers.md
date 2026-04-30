@@ -8,10 +8,13 @@ In addition to built in helpers, you can define your own helper
 functions in JavaScript. Crustomize will look for a folder in the
 working directory called `crustomize_helpers` and import all `.js` files. Any
 exported function is now available as a helper. You can override the
-folder location using the `--helpers/-H` switch.
+folder location using the `--helpers/-H` switch, the `helpers:` key in a
+[`.crustomizerc`](config-file.md) file, or the `CRUSTOMIZE_HELPERS`
+environment variable.
 
-Finally, you can also provide a colon (`:`) separated string of absolute
-or relative files in the `CRUSTOMIZE_HELPERS` environment variable.
+All three sources accept a colon-separated list of paths, and each path can
+be either a local file/folder or an `s3://bucket/prefix` URL — see
+[Custom helpers](custom-helpers.md) for details.
 
 A helper function is a function that receives a few context parameters
 and returns a helper function. Read more about custom helpers
