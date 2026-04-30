@@ -8,64 +8,29 @@ import deepmerge from "deepmerge"
 import { lint, lintStdin } from "../lint"
 import type { CommandFunction, Flags } from "./types.d"
 import { getManifest, normalizeOverlay, type ArrayMergeStrategy, type NormalizedOverlay } from "../manifest"
-import {
-  S3Client,
-  GetObjectCommand,
-  ListObjectsV2Command,
-} from "@aws-sdk/client-s3"
+import { syncS3 } from "../s3-cache"
 import { jsonpatch } from "json-p3"
 import { run } from "../run"
 
 type BaseFiles = Record<string, any>
 type OverlayFiles = Record<string, any>
 
-async function getS3Files(
-  base: string,
+function readBaseDir(
+  basePath: string,
   flags: Flags,
   values: Record<string, any>,
   stack?: Record<string, any>,
-): Promise<BaseFiles> {
-  const options = flags.profile ? { profile: flags.profile } : {}
-  const s3 = new S3Client(options)
-  const bucket = base.split("/")[2]
-  const prefix = base.split("/").slice(3).join("/")
-  const command = new ListObjectsV2Command({
-    Bucket: bucket,
-    Prefix: prefix,
-  })
-  const response = await s3.send(command)
-  if (!response.Contents) return {}
+): BaseFiles {
+  const baseFileNames = fs.readdirSync(basePath).filter(ymlFilter)
+  return baseFileNames.reduce<BaseFiles>((acc, fileName) => {
+    const filePath = `${basePath}/${fileName}`
+    if (!fs.lstatSync(filePath).isFile()) return acc
 
-  const files: BaseFiles = {}
-  for (const item of response.Contents) {
-    if (!item.Key) continue
-    if (item.Key.endsWith(".yaml") || item.Key.endsWith(".yml")) {
-      const key = item.Key
-      const params = {
-        Bucket: bucket,
-        Key: key,
-      }
-      const output = await s3.send(new GetObjectCommand(params))
-      const fileStr = await output.Body?.transformToString()
-      if (fileStr) {
-        const file = processYaml(fileStr, values, flags, "./", stack)
-        const fileName = key.split("/").pop() as string
-        files[fileName] = yamlParse(file) || {}
-      }
-    }
-  }
-  return files
-}
-
-async function getS3File(source: string, flags: Flags): Promise<string> {
-  const options = flags.profile ? { profile: flags.profile } : {}
-  const s3 = new S3Client(options)
-  const bucket = source.split("/")[2]
-  const key = source.split("/").slice(3).join("/")
-  const output = await s3.send(
-    new GetObjectCommand({ Bucket: bucket, Key: key }),
-  )
-  return (await output.Body?.transformToString()) ?? ""
+    const fileStr = fs.readFileSync(filePath, "utf8").toString()
+    const file = processYaml(fileStr, values, flags, basePath, stack)
+    acc[fileName] = yamlParse(file) || {}
+    return acc
+  }, {})
 }
 
 async function getGitFiles(
@@ -91,18 +56,7 @@ async function getGitFiles(
   } else {
     git(["-C", tempDir, "checkout"])
   }
-  const basePath = path.resolve(tempDir, "base")
-  const baseFileNames = fs.readdirSync(basePath).filter(ymlFilter)
-  const baseFiles = baseFileNames.reduce<BaseFiles>((acc, fileName) => {
-    const filePath = `${basePath}/${fileName}`
-    if (!fs.lstatSync(filePath).isFile()) return acc
-
-    const fileStr = fs.readFileSync(filePath, "utf8").toString()
-    const file = processYaml(fileStr, values, flags, basePath, stack)
-    acc[fileName] = yamlParse(file) || {}
-    return acc
-  }, {})
-  return baseFiles
+  return readBaseDir(path.resolve(tempDir, "base"), flags, values, stack)
 }
 
 function ymlFilter(fileName: string): boolean {
@@ -117,22 +71,12 @@ async function getBaseFiles(
   stack?: Record<string, any>,
 ): Promise<BaseFiles> {
   if (base.startsWith("s3://")) {
-    return getS3Files(base, flags, values, stack)
+    const localDir = syncS3(base, flags.profile, "prefix")
+    return readBaseDir(localDir, flags, values, stack)
   } else if (base.startsWith("git@")) {
     return getGitFiles(base, /*crustomizePath,*/ flags, values, stack)
   } else {
-    const basePath = path.resolve(crustomizePath, base)
-    const baseFileNames = fs.readdirSync(basePath).filter(ymlFilter)
-    const baseFiles = baseFileNames.reduce<BaseFiles>((acc, fileName) => {
-      const filePath = `${basePath}/${fileName}`
-      if (!fs.lstatSync(filePath).isFile()) return acc
-
-      const fileStr = fs.readFileSync(filePath, "utf8").toString()
-      const file = processYaml(fileStr, values, flags, basePath, stack)
-      acc[fileName] = yamlParse(file) || {}
-      return acc
-    }, {})
-    return baseFiles
+    return readBaseDir(path.resolve(crustomizePath, base), flags, values, stack)
   }
 }
 
@@ -256,14 +200,10 @@ export const apply: CommandFunction<Record<string, any>> = async (
       console.log(result)
     }
     if (manifest.params) {
-      const paramsContent = manifest.params.startsWith("s3://")
-        ? await getS3File(manifest.params, flags)
-        : fs
-            .readFileSync(
-              path.resolve(crustomizePath, manifest.params),
-              "utf8",
-            )
-            .toString()
+      const paramsPath = manifest.params.startsWith("s3://")
+        ? syncS3(manifest.params, flags.profile, "file")
+        : path.resolve(crustomizePath, manifest.params)
+      const paramsContent = fs.readFileSync(paramsPath, "utf8").toString()
       const paramsYaml = processYaml(
         paramsContent,
         manifest.values,

@@ -54,6 +54,23 @@ Be aware that when resources are merged by crustomize it doesn't care
 which file the resources are from, so if you have duplicates in two
 different files, the resulting template will only have one of these.
 
+## Cache folder
+
+When `base`, `params`, or `--helpers` point at an `s3://` location,
+crustomize mirrors the content to a local cache at
+`.crustomize/cache/s3/<bucket>/<key>/` using `aws s3 sync --delete`.
+Subsequent runs only transfer changed files, so the cache is
+nearly-free after the first invocation.
+
+S3 locations are treated as immutable by convention: pin versions
+by including a version segment in the URL (e.g. `s3://bases/ecs/v3`)
+and bump it to publish a new version. Mutating content at an
+existing S3 path works but blurs which version was used for a
+given deployment.
+
+Add `.crustomize/` to your `.gitignore` to keep the cache out of
+version control.
+
 ## Bases hosted on S3
 
 The `base` field can also point to an S3 prefix instead of a local

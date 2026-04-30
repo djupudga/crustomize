@@ -6,6 +6,7 @@ import { helpers } from "./helpers"
 import { yamlParse } from "yaml-cfn"
 import path from "path"
 import { run } from "./run"
+import { syncS3 } from "./s3-cache"
 
 // Data should contain all types in helpers
 type Data = {
@@ -45,6 +46,15 @@ function solvePaths(p: string): string[] {
   return paths
 }
 
+/**
+ * Splits a helpers path value on ":" but preserves "s3://..." URLs as
+ * single tokens. This lets users combine local paths and S3 URLs:
+ *   "./local:s3://bucket/helpers"
+ */
+export function splitHelperPaths(value: string): string[] {
+  return value.split(/:(?!\/\/)/)
+}
+
 function loadCustomHelpers(
   wd: string,
   data: Data,
@@ -65,9 +75,12 @@ function loadCustomHelpers(
   }
 
   // Split and make unique
-  const helpers = Array.from(new Set(helpersPaths.split(":")))
+  const helpers = Array.from(new Set(splitHelperPaths(helpersPaths)))
 
-  for (const helpersPath of helpers) {
+  for (let helpersPath of helpers) {
+    if (helpersPath.startsWith("s3://")) {
+      helpersPath = syncS3(helpersPath, flags.profile, "prefix")
+    }
     const paths = solvePaths(helpersPath)
     for (const p of paths) {
       if (fs.existsSync(p)) {
