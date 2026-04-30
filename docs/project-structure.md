@@ -54,6 +54,23 @@ Be aware that when resources are merged by crustomize it doesn't care
 which file the resources are from, so if you have duplicates in two
 different files, the resulting template will only have one of these.
 
+## Bases hosted on S3
+
+The `base` field can also point to an S3 prefix instead of a local
+directory. Crustomize will list the objects under the prefix and load
+all `.yml` / `.yaml` files as base templates:
+
+```yaml
+base: s3://my-bases-bucket/ecs/v3
+overlays:
+  - ./Template.yml
+```
+
+The AWS profile used for the S3 calls is the one configured via
+`profile:` in the manifest or the `--profile` flag. This is useful
+when base templates are shared across teams or repositories and you
+do not want to vendor them into every consuming project.
+
 ## Params files
 
 If you need CloudFormation parameters, you put these in an overlay file
@@ -78,6 +95,13 @@ my-app/
 
 When processed the params `YAML` file is converted to a `params.json` file
 and saved to the output folder.
+
+The `params` field also accepts an `s3://bucket/key` URL if you want to
+store parameters centrally rather than in each variant directory:
+
+```yaml
+params: s3://my-config-bucket/stacks/my-stack/params.yml
+```
 
 The `env.yml` in the project structure's root is used to define
 environment variables that are common to all variants. These

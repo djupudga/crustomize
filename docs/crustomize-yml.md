@@ -20,6 +20,8 @@ stack:
     - CAPABILITY_NAMED_IAM
   tags:
     Environment: ${env}
+  s3Bucket: my-template-bucket
+  s3Prefix: cfn-templates
 params: ./params.yml
 overlays:
   - ./Template.yml
@@ -36,17 +38,17 @@ patches:
 
 ## Fields
 
-| Field      | Description                                                           |
-| ---------- | --------------------------------------------------------------------- |
-| `vars`     | Variables that are expanded in the `crustomize.yml` manifest only.    |
-| `base`     | Path to the directory containing base templates.                      |
-| `overlays` | List of overlay files to merge with the base templates.               |
-| `params`   | Path to a `params.yml` file converted to JSON when applying.          |
-| `render`   | Template engine (`handlebars` or `ejs`). Overrides `--render` if set. |
-| `profile`  | AWS CLI profile used by helper functions. Overrides `--profile`.      |
-| `stack`    | CloudFormation stack information for deployment commands.             |
-| `values`   | Arbitrary values accessible from templates.                           |
-| `patches`  | JSON patch operations applied after merging templates.                |
+| Field      | Description                                                                              |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| `vars`     | Variables that are expanded in the `crustomize.yml` manifest only.                       |
+| `base`     | Path to a directory of base templates. Can be a local path or an `s3://bucket/prefix` URL.|
+| `overlays` | List of overlay files to merge with the base templates.                                  |
+| `params`   | Path to a `params.yml` file converted to JSON when applying. Can be local or `s3://bucket/key`. |
+| `render`   | Template engine (`handlebars` or `ejs`). Overrides `--render` if set.                    |
+| `profile`  | AWS CLI profile used by helper functions. Overrides `--profile`.                         |
+| `stack`    | CloudFormation stack information for deployment commands.                                |
+| `values`   | Arbitrary values accessible from templates.                                              |
+| `patches`  | JSON patch operations applied after merging templates.                                   |
 
 ## Crustomize JSON Schema
 
@@ -122,6 +124,12 @@ patches:
           "additionalProperties": {
             "type": "string"
           }
+        },
+        "s3Bucket": {
+          "type": "string"
+        },
+        "s3Prefix": {
+          "type": "string"
         }
       },
       "required": [

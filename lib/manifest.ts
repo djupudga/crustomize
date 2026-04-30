@@ -42,6 +42,8 @@ export type CrustomizeManifest = {
     name: string
     capabilities?: string[]
     tags?: Record<string, string>
+    s3Bucket?: string
+    s3Prefix?: string
   }
   values: any
   patches?: JsonPatch[]
@@ -108,7 +110,6 @@ export function getManifest(crustomizePath: string): CrustomizeManifest {
       const validateValues = ajv.compile(valuesSchema)
       const validValues = validateValues(cached[manifestFilePath].values)
       if (!validValues) {
-      
         throw new AjvValidationError("Incorrect 'values' in crustomize.yml", validateValues.errors)
       }
     }

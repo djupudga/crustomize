@@ -105,6 +105,14 @@ params: ./params.yml
 When you deploy this stack, the output folder will now contain `template.yml`
 and a `params.json` file.
 
+The `params` value can also be an `s3://bucket/key` URL, in which case
+crustomize will fetch the params file from S3 (using the configured
+`profile`) before processing it:
+
+```yml
+params: s3://my-config-bucket/stacks/my-stack/params.yml
+```
+
 When using a `params.yml` file, it is a good practice to validate as well as
 lint the template:
 
@@ -115,3 +123,22 @@ crustomize deploy path/to/overlay/folder
 
 > Note: Crustomize does not manage the life-cycle of your stack. It can
 > only deploy and manage change-sets. Use the AWS CLI to delete stacks.
+
+## Deploying large templates via S3
+
+CloudFormation rejects templates larger than 51,200 bytes when passed inline.
+If your rendered template exceeds that size, configure an S3 bucket for
+template uploads on the stack:
+
+```yml
+stack:
+  name: stack-name
+  s3Bucket: my-template-bucket
+  s3Prefix: cfn-templates
+```
+
+When `s3Bucket` is set, `crustomize deploy` passes `--s3-bucket` (and
+`--s3-prefix` when provided) to `aws cloudformation deploy`, which uploads
+the template to S3 before creating or updating the stack. The bucket must
+already exist and be writable by the deploying principal. `s3Prefix` is
+optional and controls the key prefix (folder) inside the bucket.

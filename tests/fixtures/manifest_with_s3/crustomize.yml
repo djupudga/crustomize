@@ -1,0 +1,5 @@
+base: ../base/
+stack:
+  name: s3-stack
+  s3Bucket: my-template-bucket
+  s3Prefix: some/prefix

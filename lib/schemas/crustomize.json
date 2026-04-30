@@ -52,6 +52,12 @@
         "name": {
           "type": "string"
         },
+        "s3Bucket": {
+          "type": "string"
+        },
+        "s3Prefix": {
+          "type": "string"
+        },
         "capabilities": {
           "type": "array",
           "uniqueItems": true,

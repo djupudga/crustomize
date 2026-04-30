@@ -57,6 +57,17 @@ async function getS3Files(
   return files
 }
 
+async function getS3File(source: string, flags: Flags): Promise<string> {
+  const options = flags.profile ? { profile: flags.profile } : {}
+  const s3 = new S3Client(options)
+  const bucket = source.split("/")[2]
+  const key = source.split("/").slice(3).join("/")
+  const output = await s3.send(
+    new GetObjectCommand({ Bucket: bucket, Key: key }),
+  )
+  return (await output.Body?.transformToString()) ?? ""
+}
+
 async function getGitFiles(
   base: string,
   // crustomizePath: string,
@@ -245,9 +256,16 @@ export const apply: CommandFunction<Record<string, any>> = async (
       console.log(result)
     }
     if (manifest.params) {
-      const paramsPath = path.resolve(crustomizePath, manifest.params)
+      const paramsContent = manifest.params.startsWith("s3://")
+        ? await getS3File(manifest.params, flags)
+        : fs
+            .readFileSync(
+              path.resolve(crustomizePath, manifest.params),
+              "utf8",
+            )
+            .toString()
       const paramsYaml = processYaml(
-        fs.readFileSync(paramsPath, "utf8").toString(),
+        paramsContent,
         manifest.values,
         flags,
         path.resolve(crustomizePath),

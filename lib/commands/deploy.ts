@@ -58,6 +58,12 @@ export const deploy: CommandFunction = async ([crustomizePath], flags) => {
     if (manifest.stack.capabilities) {
       args.push("--capabilities", manifest.stack.capabilities.join(" "))
     }
+    if (manifest.stack.s3Bucket) {
+      args.push("--s3-bucket", manifest.stack.s3Bucket)
+    }
+    if (manifest.stack.s3Prefix) {
+      args.push("--s3-prefix", manifest.stack.s3Prefix)
+    }
     if (manifest.stack.tags) {
       args.push(
         "--tags",
