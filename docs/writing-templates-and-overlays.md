@@ -121,6 +121,36 @@ For more information, consult [Javascript Object Notation
 Patch](https://datatracker.ietf.org/doc/html/rfc6902)
 IETF specifications.
 
+### Appending to arrays
+
+A common use case is appending items to an existing array, such as adding
+environment variables to an ECS task definition. Use `add` with a path
+ending in `/-` to append to the end of an array:
+
+```yml
+base: s3://my-bucket/cfn/service/1.0
+stack:
+  name: my-service-test
+params: s3://my-bucket/cfn/service/1.0/.crusty/params.yml
+values:
+  Stage: test
+patches:
+  - op: add
+    path: "/Resources/TaskDefinition/Properties/ContainerDefinitions/0/Environment/-"
+    value:
+      Name: MY_ENV_VAR
+      Value: "some-value"
+  - op: add
+    path: "/Resources/TaskDefinition/Properties/ContainerDefinitions/0/Environment/-"
+    value:
+      Name: ANOTHER_VAR
+      Value: "another-value"
+```
+
+This is particularly useful when working with shared base templates where
+you cannot modify the template itself but need to inject service-specific
+configuration.
+
 ## Step 4: Template rendering
 
 You can use either EJS or Handlebars as a template rendering engine.
